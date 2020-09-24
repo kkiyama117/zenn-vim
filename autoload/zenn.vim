@@ -8,7 +8,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Install zenn-cli and create templates.
-function! ZennVim#zenn_init() abort
+function! zenn-vim#zenn_init() abort
   echo "zenn initialization start"
   " check node_modules
   if !finddir("node_modules")

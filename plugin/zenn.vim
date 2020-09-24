@@ -8,6 +8,10 @@ let g:loaded_zenn_vim = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! zenn#zenn_init()
+  echo 
+endfunction
+
 " npx zenn init
 command! -nargs=0 ZennInit call ZennVim#zenn_init()
 " npx zenn preview
