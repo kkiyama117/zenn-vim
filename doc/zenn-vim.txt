@@ -1,0 +1,103 @@
+*zenn-vim.txt*                                     zenn.dev extension for vim.
+
+Version: 0.1.1
+Author: kkiyama117 <k.kiyama117@gmail.com>
+License: GPLv3 license
+
+==============================================================================
+CONTENTS                                                   *zenn-vim-contents*
+
+Introduction    |zenn-vim-introduction|
+Install         |zenn-vim-install|
+Interface       |zenn-vim-interface|
+  Functions       |zenn-vim-functions|
+  Mappings        |zenn-vim-mappings|
+  Commands        |zenn-vim-commands|
+  Options         |zenn-vim-options|
+
+==============================================================================
+INTRODUCTION                                           *zenn-vim-introduction*
+
+There are many plugins for vim with lsp or coc-nvim. But, there are no toml
+analyzer for vim. Even more there are few standalone lsp for toml.
+
+This plugin aims for writing toml much easier and making better lsp of toml
+able to be used in other editor also.
+
+==============================================================================
+INSTALL                                                     *zenn-vim-install*
+
+                                                            *zenn-vim-install*
+Requirements~
+
+- Neovim or vim alternative(Required to be work with coc-nvim).
+- coc-nvim and its requirements
+- (Optional) vim plugin manager. (If you use non-default branch version)
+
+Now configure this plugin if needed. (Refer to |zenn-vim-options|)
+
+==============================================================================
+INTERFACE                                                 *zenn-vim-interface*
+
+------------------------------------------------------------------------------
+FUNCTIONS                                                 *zenn-vim-functions*
+
+WIP.
+
+                                                          *zenn-vim-init()*
+ZennVim#init()
+        Install zenn-cli and run initialize script.
+
+                                                          *zenn-vim-update()*
+ZennVim#zenn_update()
+        Update zenn-cli.
+
+                                                          *zenn-vim-preview()*
+ZennVim#zenn_preview(...)
+        Run zenn-cli preview.
+        you can set args same as npx command.
+>
+        zenn-vim#preview("--port", "8080")
+<
+
+------------------------------------------------------------------------------
+MAPPINGS                                                   *zenn-vim-mappings*
+
+WIP.
+
+Note:
+    there are no mappings now, but some mappings in future.
+
+------------------------------------------------------------------------------
+COMMANDS                                                   *zenn-vim-commands*
+
+WIP.
+
+Note:
+    commands may lost backwards compatible when updated.
+
+
+                                                        *zenn-vim-zenninstall*
+ZennInstall
+        call |zenn-vim-install()|.
+        Install zenn-cli and run initialize script.
+
+                                                        *zenn-vim-zennupdate*
+ZennUpdate
+        call |zenn-vim-update()|.
+
+                                                        *zenn-vim-zennpreview*
+ZennPreview ...
+        call |zenn-vim-preview()|.
+
+------------------------------------------------------------------------------
+OPTIONS                                                     *zenn-vim-options*
+
+WIP.
+
+Note:
+    there are no commands now, but some options for format, copy, and actions
+    in future.
+
+==============================================================================
+vim:ft=help:tw=78:sw=4:ts=8:sts=0:nosta:norl:noet:fen:fdm=marker:fdl=0:
