@@ -8,7 +8,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Install zenn-cli and create templates.
-function! zenn-vim#zenn_init() abort
+function! zenn_vim#init() abort
   echo "zenn initialization start"
   " check node_modules
   if !finddir("node_modules")
@@ -30,12 +30,12 @@ function! zenn-vim#zenn_init() abort
 endfunction
 
 " Update zenn-cli with fetching new one from npm.
-function! ZennVim#zenn_update() abort
+function! zenn_vim#cli_update() abort
   return s:npm_command("install", "zenn-cli@latest")
 endfunction
 
 " Update zenn-cli with fetching new one from npm.
-function! ZennVim#zenn_preview(...) abort
+function! zenn_vim#preview(...) abort
   return s:zenn_command("preview", join(a:000))
 endfunction
 
