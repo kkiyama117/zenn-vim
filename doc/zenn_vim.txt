@@ -57,7 +57,7 @@ zenn_vim#preview(...)
         Run zenn-cli preview.
         you can set args same as npx command.
 >
-        zenn-vim#preview("--port", "8080")
+        zenn_vim#preview("--port", "8080")
 <
 
 ------------------------------------------------------------------------------
