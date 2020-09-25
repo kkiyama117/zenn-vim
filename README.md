@@ -15,7 +15,7 @@
 - Commands like `ZennInit`, `ZennNewArticle`, ...
 
 For details, see [`doc/zenn_vim.txt`](https://github.com/kkiyama117/zenn-vim/blob/master/doc/zenn_vim.txt)
-or call `:help zenn-vim` on vim
+or call `:help zenvim` on vim
 
 ## Install
 
