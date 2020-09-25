@@ -11,7 +11,11 @@ set cpo&vim
 " npx zenn init
 command! -nargs=0 ZennInit call zenn_vim#init()
 " npx zenn preview
-command! -nargs=* ZennPreview call zenn_vim#preview(<args>)
+command! -nargs=* ZennPreview call zenn_vim#preview(<f-args>)
+" npx zenn new article
+command! -nargs=* ZennNewArticle call zenn_vim#new_article(<f-args>)
+" npx zenn new book
+command! -nargs=* ZennNewArticle call zenn_vim#new_book(<f-args>)
 " npm install zenn-cli@latest
 command! -nargs=0 ZennUpdate call zenn_vim#cli_update()
 
