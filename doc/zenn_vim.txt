@@ -44,21 +44,37 @@ FUNCTIONS                                                 *zenn-vim-functions*
 
 WIP.
 
-                                                          *zenn-vim-init()*
+                                                             *zenn_vim#init()*
 zenn_vim#init()
         Install zenn-cli and run initialize script.
 
-                                                          *zenn-vim-update()*
+                                                       *zenn_vim#cli_update()*
 zenn_vim#cli_update()
         Update zenn-cli.
 
-                                                          *zenn-vim-preview()*
-zenn_vim#preview(...)
+                                                          *zenn_vim#preview()*
+zenn_vim#preview([{port}])
         Run zenn-cli preview.
-        you can set args same as npx command.
->
-        zenn_vim#preview("--port", "8080")
-<
+        {port} is port number preview server running.
+        default is 8080
+
+                                                      *zenn_vim#new_article()*
+zenn_vim#new_article([{slug},{title},{type},{emoji}])
+        Create new book.
+        {slug} is file name, must be over 12 and below 50 charactors
+        and need not to be duplicated. 
+        {title} is title of article.
+        {type} is type of article, choose from [`"tech"`,`"idea"`].
+        {emoji} is a charactor uused as thumbnail.
+        all emoji lists are at https://getemoji.com/
+        if it's not set, zenn-cli generate rundom slug.
+
+                                                         *zenn_vim#new_book()*
+zenn_vim#new_book([{slug}])
+        Create new book.
+        {slug} is file name, must be over 12 and below 50 charactors
+        and need not to be duplicated. 
+        if it's not set, zenn-cli generate rundom slug.
 
 ------------------------------------------------------------------------------
 MAPPINGS                                                   *zenn-vim-mappings*
@@ -77,18 +93,26 @@ Note:
     commands may lost backwards compatible when updated.
 
 
-                                                        *zenn-vim-zenninstall*
+                                                    *zenn-vim-command-install*
 ZennInstall
-        call |zenn-vim-install()|.
+        call |zenn_vim#install()|.
         Install zenn-cli and run initialize script.
 
-                                                        *zenn-vim-zennupdate*
+                                                     *zenn-vim-command-update*
 ZennUpdate
-        call |zenn-vim-update()|.
+        call |zenn_vim#cli_update()|.
 
-                                                        *zenn-vim-zennpreview*
-ZennPreview ...
-        call |zenn-vim-preview()|.
+                                                    *zenn-vim-command-preview*
+ZennPreview [{port}] 
+        call |zenn_vim#preview()|.
+
+                                                *zenn-vim-command-new-article*
+ZennNewArticle[{slug} {title} {type} {emoji}] 
+        call |zenn_vim#new_article()|.
+
+                                                   *zenn-vim-command-new-book*
+ZennNewArticle[{slug} {title} {type} {emoji}] 
+        call |zenn_vim#new_book()|.
 
 ------------------------------------------------------------------------------
 OPTIONS                                                     *zenn-vim-options*
