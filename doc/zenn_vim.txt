@@ -1,4 +1,4 @@
-*zenn-vim.txt*                                     zenn.dev extension for vim.
+*zenn_vim.txt*                                     zenn.dev extension for vim.
 
 Version: 0.1.1
 Author: kkiyama117 <k.kiyama117@gmail.com>
@@ -45,15 +45,15 @@ FUNCTIONS                                                 *zenn-vim-functions*
 WIP.
 
                                                           *zenn-vim-init()*
-ZennVim#init()
+zenn_vim#init()
         Install zenn-cli and run initialize script.
 
                                                           *zenn-vim-update()*
-ZennVim#zenn_update()
+zenn_vim#cli_update()
         Update zenn-cli.
 
                                                           *zenn-vim-preview()*
-ZennVim#zenn_preview(...)
+zenn_vim#preview(...)
         Run zenn-cli preview.
         you can set args same as npx command.
 >
