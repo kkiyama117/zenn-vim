@@ -27,7 +27,7 @@ Install as vim plugin same as others.
 I use GPLv3 now but give all rights if [zenn official](https://github.com/zenn-dev)
 requires.
 Contact [kkiyama117](https://github.com/kkiyama117) or make issues on this
-repository if there are plobrems.
+repository if there are rights side plobrems.
 
 ## TODO
 
