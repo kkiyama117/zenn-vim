@@ -4,17 +4,29 @@
 
 scriptencoding utf-8
 
-if has('nvim')
+let s:save_cpo = &cpo
+set cpo&vim
 
+if has('nvim')
+  function! zenn_vim#start() abort
+    return _zenn_start()
+  endfunction
+
+  function! zenn_vim#resume() abort
+    call _zenn_resume()
+  endfunction
+else
+  function! zenn_vim#start() abort
+    return zenn_vim#rplugin#start()
+  endfunction
+  function! zenn_vim#resume() abort
+    return zenn_vim#rplugin#resume()
+  endfunction
 endif
 
 if !exists('g:zenn_vim#custom_mappings')
   let g:lista#custom_mappings = []
 endif
-
-let s:save_cpo = &cpo
-set cpo&vim
-
 
 " show error message
 function! s:echo_err(msg) abort

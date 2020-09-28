@@ -1,19 +1,33 @@
-import neovim
+try:
+    import neovim
+
+    @neovim.plugin
+    class ZennEntryPoint(object):
+        def __init__(self, nvim):
+            self.nvim = nvim
+            self.registory = Registry(nvim)
+
+        @neovim.function("_zenn_start", sync=True)
+        def start(self, args):
+            self.nvim.out_write("zenn server start.\n")
+            self.registory.test()
+            # return True
+
+        @neovim.function("_zenn_resume", sync=True)
+        def resume(self, args):
+            self.nvim.out_write("zenn server resume.\n")
+            # return True
 
 
-@neovim.plugin
-class TestPlugin(object):
+except ImportError:
+    pass
+
+
+class Registry:
     def __init__(self, nvim):
         self.nvim = nvim
 
-    @neovim.function("TestFunction", sync=True)
-    def testfunction(self, args):
-        return 3
-
-    @neovim.command("TestCommand", range="", nargs="*")
-    def testcommand(self, args, range):
-        self.nvim.current.line = "Command with args: {}, range: {}".format(args, range)
-
-    @neovim.autocmd("ExitPre", sync=True)
-    def on_bufenter(self, filename):
-        self.nvim.out_write("testplugin is in " + filename + "\n")
+    def test(self):
+        self.nvim.command("echohl ErrorMsg")
+        self.nvim.command("echomsg 'hoge~~'")
+        self.nvim.command("echohl None")
