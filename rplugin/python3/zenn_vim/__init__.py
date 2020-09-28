@@ -15,6 +15,6 @@ class TestPlugin(object):
         self.nvim.current.line = ('Command with args: {}, range: {}'
                                   .format(args, range))
 
-    @neovim.autocmd('BufEnter', pattern='*.py', eval='expand("<afile>")', sync=True)
-    def on_bufenter(self, filename):
-        self.nvim.out_write("testplugin is in " + filename + "\n")
+    # @neovim.autocmd('BufEnter', pattern='*.md', eval='expand("<afile>")', sync=True)
+    # def on_bufenter(self, filename):
+      #   self.nvim.out_write("testplugin is in " + filename + "\n")
