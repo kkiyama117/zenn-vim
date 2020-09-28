@@ -1,8 +1,8 @@
 import neovim
 
+
 @neovim.plugin
 class TestPlugin(object):
-
     def __init__(self, nvim):
         self.nvim = nvim
 
@@ -10,11 +10,10 @@ class TestPlugin(object):
     def testfunction(self, args):
         return 3
 
-    @neovim.command("TestCommand", range='', nargs='*')
+    @neovim.command("TestCommand", range="", nargs="*")
     def testcommand(self, args, range):
-        self.nvim.current.line = ('Command with args: {}, range: {}'
-                                  .format(args, range))
+        self.nvim.current.line = "Command with args: {}, range: {}".format(args, range)
 
-    # @neovim.autocmd('BufEnter', pattern='*.md', eval='expand("<afile>")', sync=True)
-    # def on_bufenter(self, filename):
-      #   self.nvim.out_write("testplugin is in " + filename + "\n")
+    @neovim.autocmd("ExitPre", sync=True)
+    def on_bufenter(self, filename):
+        self.nvim.out_write("testplugin is in " + filename + "\n")
