@@ -19,7 +19,7 @@ command! -nargs=* ZennNewArticle call zenn_vim#new_book(<f-args>)
 " npm install zenn-cli@latest
 command! -nargs=0 ZennUpdate call zenn_vim#cli_update()
 " test zenn start
-command! -nargs=0 ZennStart call zenn_vim#start()
+command! -nargs=* ZennStart call zenn_vim#start(<f-args>)
 
 let s:save_cpo = &cpo
 set cpo&vim
