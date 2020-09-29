@@ -7,6 +7,44 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
+if has('nvim')
+  function! zenn_vim#init() abort
+    return _zenn_init()
+  endfunction
+
+  function! zenn_vim#update() abort
+    return _zenn_update()
+  endfunction
+
+  function! zenn_vim#preview(...) abort
+    return _zenn_preview(a:000)
+  endfunction
+
+  function! zenn_vim#stop_preview() abort
+    call _zenn_stop_preview()
+  endfunction
+else
+  function! zenn_vim#init() abort
+    return zenn_vim#rplugin#init()
+  endfunction
+
+  function! zenn_vim#update() abort
+    return zenn_vim#rplugin#update()
+  endfunction
+
+  function! zenn_vim#preview() abort
+    return zenn_vim#rplugin#preview()
+  endfunction
+
+  function! zenn_vim#stop_preview() abort
+    return zenn_vim#rplugin#stop_preview()
+  endfunction
+endif
+
+if !exists('g:zenn_vim#custom_mappings')
+  let g:lista#custom_mappings = []
+endif
+
 " show error message
 function! s:echo_err(msg) abort
   echohl ErrorMsg
@@ -40,36 +78,6 @@ endfunction
 " run npx zenn command
 function! s:zenn_command(...) abort
   return call("s:run_command", ["npx" , "zenn"] + a:000)
-endfunction
-
-" Install zenn-cli and create templates.
-function! zenn_vim#init() abort
-  echo "zenn initialization start"
-  call s:npm_command("init", "--yes")
-  " check zenn-cli
-  if !filereadable("node_modules/.bin/zenn")
-    call s:npm_command("i","zenn-cli")
-  else
-    echo "`zenn-cli` is already installed. zenn-cli installation is passed."
-  endif
-  if filereadable("node_modules/.bin/zenn")
-    call s:zenn_command("init")
-  else
-    call s:echo_err("zenn cli is not found!")
-    return false
-  endif
-    echo "zenn initialization successfully finished!"
-endfunction
-
-" Update zenn-cli with fetching new one from npm.
-function! zenn_vim#cli_update() abort
-  call s:npm_command("i", "zenn-cli@latest")
-  echo "zenn update successfully finished!"
-endfunction
-
-" Update zenn-cli with fetching new one from npm.
-function! zenn_vim#preview(...) abort
-  call s:zenn_command("preview", join(a:000))
 endfunction
 
 " Create new article.
