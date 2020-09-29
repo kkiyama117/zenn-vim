@@ -261,3 +261,8 @@ tags
 .history
 
 # End of https://www.toptal.com/developers/gitignore/api/vim,visualstudiocode,pycharm+all,python
+
+# other editor config
+.vim
+.vscode
+
