@@ -5,15 +5,15 @@
 ## Required
 
 - vim or neovim
-    - can call async command if you use neovim
+  - can call async command if you use neovim
 - npm
-  - To call zenn-cli and npx command
   - zenn official doesn't specify nodejs version number, but I recommend using
     its latest lts version.
 
-## Features(WIP)
+## Features
 
-- Commands like `ZennInit`, `ZennNewArticle`, ...
+- Add functions like `zenn_vim#init()`, `zenn_vim#new_article()`, ...
+- No keybinds and commands.
 
 For details, see [`doc/zenn_vim.txt`](https://github.com/kkiyama117/zenn-vim/blob/master/doc/zenn_vim.txt)
 or call `:help zenn_vim` on vim
