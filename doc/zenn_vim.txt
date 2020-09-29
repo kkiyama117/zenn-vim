@@ -37,6 +37,27 @@ Requirements~
 Now configure this plugin if needed. (Refer to |zenn-vim-options|)
 
 ==============================================================================
+EXAMPLES                                                   *zenn-vim-examples*
+
+>
+  " hoge
+  " pynvim function
+  " npx zenn init
+  command! -nargs=0 ZennInit call zenn_vim#init()
+  " npm install zenn-cli@latest
+  command! -nargs=0 ZennUpdate call zenn_vim#update()
+  " npx zenn preview
+  command! -nargs=* ZennPreview call zenn_vim#preview(<f-args>)
+  " npx zenn preview
+  command! -nargs=0 ZennStopPreview call zenn_vim#stop_preview()
+  
+  " normal vim function
+  " npx zenn new article
+  command! -nargs=* ZennNewArticle call zenn_vim#new_article(<f-args>)
+  " npx zenn new book
+  command! -nargs=* ZennNewArticle call zenn_vim#new_book(<f-args>)
+>
+==============================================================================
 INTERFACE                                                 *zenn-vim-interface*
 
 ------------------------------------------------------------------------------
@@ -49,70 +70,50 @@ zenn_vim#init()
         Install zenn-cli and run initialize script.
 
                                                        *zenn_vim#cli_update()*
-zenn_vim#cli_update()
+zenn_vim#update()
         Update zenn-cli.
 
                                                           *zenn_vim#preview()*
 zenn_vim#preview([{port}])
         Run zenn-cli preview.
         {port} is port number preview server running.
-        default is 8080
+        default is 8000
+                                                     *zenn_vim#stop_preview()*
+zenn_vim#stop_preview()
+        Kill zenn-cli preview server. 
 
                                                       *zenn_vim#new_article()*
 zenn_vim#new_article([{slug},{title},{type},{emoji}])
         Create new book.
-        {slug} is file name, must be over 12 and below 50 charactors
+        {slug} is file name, must be over 12 and below 60 charactors
         and need not to be duplicated. 
+        if it's not set, zenn-cli generate rundom slug.
         {title} is title of article.
         {type} is type of article, choose from [`"tech"`,`"idea"`].
         {emoji} is a charactor uused as thumbnail.
         all emoji lists are at https://getemoji.com/
-        if it's not set, zenn-cli generate rundom slug.
 
                                                          *zenn_vim#new_book()*
 zenn_vim#new_book([{slug}])
         Create new book.
-        {slug} is file name, must be over 12 and below 50 charactors
+        {slug} is file name, must be over 12 and below 60 charactors
         and need not to be duplicated. 
         if it's not set, zenn-cli generate rundom slug.
 
 ------------------------------------------------------------------------------
 MAPPINGS                                                   *zenn-vim-mappings*
 
-WIP.
-
-Note:
-    there are no mappings now, but some mappings in future.
+This plugin has no mappings but you can create mappings with
+|zenn-vim-functions| as you like.
+See examples.
 
 ------------------------------------------------------------------------------
 COMMANDS                                                   *zenn-vim-commands*
 
-WIP.
-
+This plugin has no commands but you can create commands with
+|zenn-vim-functions| as you like.
 Note:
-    commands may lost backwards compatible when updated.
-
-
-                                                    *zenn-vim-command-install*
-ZennInstall
-        call |zenn_vim#install()|.
-        Install zenn-cli and run initialize script.
-
-                                                     *zenn-vim-command-update*
-ZennUpdate
-        call |zenn_vim#cli_update()|.
-
-                                                    *zenn-vim-command-preview*
-ZennPreview [{port}] 
-        call |zenn_vim#preview()|.
-
-                                                *zenn-vim-command-new-article*
-ZennNewArticle[{slug} {title} {type} {emoji}] 
-        call |zenn_vim#new_article()|.
-
-                                                   *zenn-vim-command-new-book*
-ZennNewArticle[{slug} {title} {type} {emoji}] 
-        call |zenn_vim#new_book()|.
+    there are command examples
 
 ------------------------------------------------------------------------------
 OPTIONS                                                     *zenn-vim-options*
