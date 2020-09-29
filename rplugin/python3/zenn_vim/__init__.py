@@ -1,45 +1,51 @@
-from .utils import cmd, cmd_server, output
+import typing
+
+from .utils import cmd, output
 
 try:
-    import neovim
+    import pynvim
 
-    @neovim.plugin
+
+    @pynvim.plugin
     class ZennEntryPoint(object):
         def __init__(self, nvim):
             self.nvim = nvim
-            self.daemon_manager = cmd_server.CmdServerManager()
-            self.preview_server_id = None
+            self.preview_pid: typing.Optional[int] = None
 
-        @neovim.function("_zenn_init", sync=True)
+        @pynvim.function("_zenn_init", sync=True)
         def zenn_init(self, args):
-            cmd.call_zenn_command(self.nvim, ["init"])
-            output.display_message(self.nvim, "Zenn init finished")
-            # return True
+            result = cmd.call_zenn_command(self.nvim, ["init"])
+            output.display_message(self.nvim, result)
 
-        @neovim.function("_zenn_preview", sync=True)
+        @pynvim.function("_zenn_update")
+        def zenn_update(self, args):
+            output.display_message(self.nvim, f"Zenn Update start. plz waiting.")
+            result = cmd.call_npm(self.nvim, ["install", "zenn-cli@latest"])
+            output.display_message(self.nvim, f"Zenn Update finished successfully")
+
+        @pynvim.function("_zenn_preview")
         def preview(self, args):
-            if self.preview_server_id is not None:
+            if self.preview_pid is not None:
                 output.display_message(self.nvim, "Already running")
                 return
             _args = cmd.parse_command_f_args(args)
             _command = ["preview"] + _args
-            _id, _daemon = cmd.start_system_command_daemon(
-                self.nvim, _command, self.daemon_manager
-            )
-            self.preview_server_id = _id
-            _daemon.run()
-            output.display_message(self.nvim, "Zenn preview start")
+            _id = cmd.call_zenn_command(self.nvim, _command, daemon=True)
+            port = _args if int(_args) else 8000
+            self.preview_pid = _id
+            output.display_message(self.nvim, f"Zenn preview start at localhost:{port}")
 
-        @neovim.function("_zenn_stop_preview", sync=True)
+        @pynvim.function("_zenn_stop_preview", sync=True)
         def kill_preview(self, args):
-            self.daemon_manager.kill_daemon(self.preview_server_id)
-            output.display_message(self.nvim, "Zenn preview successfully finished")
-            # cmd.call_system_command(self.nvim, cmd.parse_command_f_args(args), True)
-
-        @neovim.function("_zenn_resume", sync=True)
-        def resume(self, args):
-            self.nvim.out_write("zenn server resume.\n")
-            # return True
+            output.display_message(
+                self.nvim, "Zenn preview is stop automatically with vim closing"
+            )
+            try:
+                if self.preview_pid is not None:
+                    cmd.kill_system_command_daemon(self.nvim, self.preview_pid)
+                output.display_message(self.nvim, "Zenn preview successfully finished")
+            except:
+                output.display_message(self.nvim, "Stop Zenn preview Failed")
 
 
 except ImportError:

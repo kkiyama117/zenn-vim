@@ -12,6 +12,10 @@ if has('nvim')
     return _zenn_init()
   endfunction
 
+  function! zenn_vim#update() abort
+    return _zenn_update()
+  endfunction
+
   function! zenn_vim#preview(...) abort
     return _zenn_preview(a:000)
   endfunction
@@ -23,9 +27,15 @@ else
   function! zenn_vim#init() abort
     return zenn_vim#rplugin#init()
   endfunction
+
+  function! zenn_vim#update() abort
+    return zenn_vim#rplugin#update()
+  endfunction
+
   function! zenn_vim#preview() abort
     return zenn_vim#rplugin#preview()
   endfunction
+
   function! zenn_vim#stop_preview() abort
     return zenn_vim#rplugin#stop_preview()
   endfunction
@@ -68,12 +78,6 @@ endfunction
 " run npx zenn command
 function! s:zenn_command(...) abort
   return call("s:run_command", ["npx" , "zenn"] + a:000)
-endfunction
-
-" Update zenn-cli with fetching new one from npm.
-function! zenn_vim#cli_update() abort
-  call s:npm_command("i", "zenn-cli@latest")
-  echo "zenn update successfully finished!"
 endfunction
 
 " Create new article.
