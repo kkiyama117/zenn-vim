@@ -8,10 +8,6 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if has('nvim')
-  function! zenn_vim#init() abort
-    return _zenn_init()
-  endfunction
-
   function! zenn_vim#update() abort
     return _zenn_update()
   endfunction
@@ -24,10 +20,6 @@ if has('nvim')
     call _zenn_stop_preview()
   endfunction
 else
-  function! zenn_vim#init() abort
-    return zenn_vim#rplugin#init()
-  endfunction
-
   function! zenn_vim#update() abort
     return zenn_vim#rplugin#update()
   endfunction
@@ -36,13 +28,8 @@ else
     return zenn_vim#rplugin#preview()
   endfunction
 
-  function! zenn_vim#stop_preview() abort
-    return zenn_vim#rplugin#stop_preview()
+  function! zenn_vim#rplugin#stop_preview() abort
   endfunction
-endif
-
-if !exists('g:zenn_vim#custom_mappings')
-  let g:lista#custom_mappings = []
 endif
 
 " show error message
@@ -78,6 +65,27 @@ endfunction
 " run npx zenn command
 function! s:zenn_command(...) abort
   return call("s:run_command", ["npx" , "zenn"] + a:000)
+endfunction
+
+" ------------------------------------------------------------------------
+" zenn_vim#init: Install zenn npm package and call initializer {{{1
+"   Usage:  :call zenn_vim#init() -- initialize
+function! zenn_vim#init() abort
+  echo "zenn initialization start"
+  call s:npm_command("init", "--yes")
+  " check zenn-cli
+  if !filereadable("node_modules/.bin/zenn")
+    call s:npm_command("i","zenn-cli")
+  else
+    echo "`zenn-cli` is already installed. zenn-cli installation is passed."
+  endif
+  if filereadable("node_modules/.bin/zenn")
+    call s:zenn_command("init")
+  else
+    call s:echo_err("zenn cli is not found!")
+    return false
+  endif
+    echo "zenn initialization successfully finished!"
 endfunction
 
 " Create new article.
