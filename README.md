@@ -5,6 +5,7 @@
 ## Required
 
 - vim or neovim
+    - can call async command if you use neovim
 - npm
   - To call zenn-cli and npx command
   - zenn official doesn't specify nodejs version number, but I recommend using
