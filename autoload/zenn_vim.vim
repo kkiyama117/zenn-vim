@@ -8,16 +8,16 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if has('nvim')
-  function! zenn_vim#start(args) abort
-    return _zenn_start(a:args)
+  function! zenn_vim#init() abort
+    return _zenn_init()
   endfunction
 
   function! zenn_vim#resume() abort
     call _zenn_resume()
   endfunction
 else
-  function! zenn_vim#start(args) abort
-    return zenn_vim#rplugin#start(a:args)
+  function! zenn_vim#init()abort
+    return zenn_vim#rplugin#init()
   endfunction
   function! zenn_vim#resume() abort
     return zenn_vim#rplugin#resume()
@@ -64,7 +64,7 @@ function! s:zenn_command(...) abort
 endfunction
 
 " Install zenn-cli and create templates.
-function! zenn_vim#init() abort
+function! zenn_vim#init2() abort
   echo "zenn initialization start"
   call s:npm_command("init", "--yes")
   " check zenn-cli
