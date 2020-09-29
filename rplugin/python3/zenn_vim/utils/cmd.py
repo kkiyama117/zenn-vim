@@ -8,7 +8,7 @@ from .output import *
 
 def start_system_command_daemon(
     nvim, command: list, daemon_manager: CmdServerManager, debug=False
-) -> int:
+) -> dict:
     if daemon_manager is None:
         if debug:
             display_message(nvim, "Daemon manager does not exist!")
@@ -28,30 +28,28 @@ def kill_system_command_daemon(
 
 
 def call_system_command(nvim, command: list, debug: bool = True):
-    if type(command) is not list:
-        display_message(nvim, "list error")
-        return
     if debug:
         display_message(nvim, f"{command}")
     result: subprocess.CompletedProcess = subprocess.run(command, capture_output=debug)
     if result.returncode != 0:
         if debug:
             display_error(nvim, result.stderr, command)
-
         else:
             display_error(nvim, result.stderr)
+        return result.stderr
     else:
         if debug:
             display_message(nvim, result.stdout)
+        return result.stdout
 
 
 def parse_command_f_args(args: list):
     return list(chain.from_iterable(args))
 
 
-def call_npm(nvim, command: list, debug: bool = False):
-    call_system_command(nvim, ["npm", "run"] + command, debug)
+def call_npm(nvim, command: list, debug: bool = False) -> str:
+    return call_system_command(nvim, ["npm", "run"] + command, debug)
 
 
-def call_zenn_command(nvim, command: list, debug: bool = False):
-    call_system_command(nvim, ["npx", "zenn"] + command, debug)
+def call_zenn_command(nvim, command: list, debug: bool = False) -> str:
+    return call_system_command(nvim, ["npx", "zenn"] + command, debug)

@@ -12,15 +12,22 @@ if has('nvim')
     return _zenn_init()
   endfunction
 
-  function! zenn_vim#resume() abort
-    call _zenn_resume()
+  function! zenn_vim#preview(...) abort
+    return _zenn_preview(a:000)
+  endfunction
+
+  function! zenn_vim#stop_preview() abort
+    call _zenn_stop_preview()
   endfunction
 else
-  function! zenn_vim#init()abort
+  function! zenn_vim#init() abort
     return zenn_vim#rplugin#init()
   endfunction
-  function! zenn_vim#resume() abort
-    return zenn_vim#rplugin#resume()
+  function! zenn_vim#preview() abort
+    return zenn_vim#rplugin#preview()
+  endfunction
+  function! zenn_vim#stop_preview() abort
+    return zenn_vim#rplugin#stop_preview()
   endfunction
 endif
 
@@ -63,34 +70,10 @@ function! s:zenn_command(...) abort
   return call("s:run_command", ["npx" , "zenn"] + a:000)
 endfunction
 
-" Install zenn-cli and create templates.
-function! zenn_vim#init2() abort
-  echo "zenn initialization start"
-  call s:npm_command("init", "--yes")
-  " check zenn-cli
-  if !filereadable("node_modules/.bin/zenn")
-    call s:npm_command("i","zenn-cli")
-  else
-    echo "`zenn-cli` is already installed. zenn-cli installation is passed."
-  endif
-  if filereadable("node_modules/.bin/zenn")
-    call s:zenn_command("init")
-  else
-    call s:echo_err("zenn cli is not found!")
-    return false
-  endif
-    echo "zenn initialization successfully finished!"
-endfunction
-
 " Update zenn-cli with fetching new one from npm.
 function! zenn_vim#cli_update() abort
   call s:npm_command("i", "zenn-cli@latest")
   echo "zenn update successfully finished!"
-endfunction
-
-" Update zenn-cli with fetching new one from npm.
-function! zenn_vim#preview(...) abort
-  call s:zenn_command("preview", join(a:000))
 endfunction
 
 " Create new article.

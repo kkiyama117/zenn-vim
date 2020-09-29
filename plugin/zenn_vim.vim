@@ -12,6 +12,8 @@ set cpo&vim
 command! -nargs=0 ZennInit call zenn_vim#init()
 " npx zenn preview
 command! -nargs=* ZennPreview call zenn_vim#preview(<f-args>)
+" npx zenn preview
+command! -nargs=0 ZennStopPreview call zenn_vim#stop_preview()
 " npx zenn new article
 command! -nargs=* ZennNewArticle call zenn_vim#new_article(<f-args>)
 " npx zenn new book

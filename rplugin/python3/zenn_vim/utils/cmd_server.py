@@ -7,16 +7,17 @@ class CmdServerManager:
     def __init__(self):
         self.daemon_list: list = []
 
-    def generate_daemon(self, nvim, command: list, debug: bool = False) -> int:
+    def generate_daemon(self, nvim, command: list, debug: bool = False) -> dict:
         _daemon = CmdServer(nvim, command, debug=debug)
         self.daemon_list.append(_daemon)
-        return len(self.daemon_list) - 1
+        return {"id": len(self.daemon_list) - 1, "daemon": _daemon}
 
     def kill_daemon(self, daemon_id: int):
         _daemon = self.daemon_list.get(daemon_id)
         if _daemon is not None:
             _daemon.kill()
             self.daemon_list[daemon_id] = None
+            return daemon_id
 
 
 class CmdServer:
