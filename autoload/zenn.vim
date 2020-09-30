@@ -36,6 +36,11 @@ function! zenn#new_article(...) abort
       let l:args_str .= " --" . key . " " . value
     endfor
     call zenn#cmd#zenn_command(["new:article", l:args_str])
+      \.then(
+      \  { result -> zenn#cmd#echo_msg(result)},
+      \  { result -> zenn#cmd#echo_err(result)},
+      \ )
+      \.finally({ result -> zenn#cmd#echo_msg("zenn#new_article finished")})
   endif
 endfunction
 
@@ -45,7 +50,11 @@ endfunction
 function! zenn#new_book(...) abort
   const l:args = empty(a:000) ? [] : ["--slug", a:1]
   call zenn#cmd#zenn_command(["new:book"] + l:args)
-    echo "zenn create book"
+      \.then(
+      \  { result -> zenn#cmd#echo_msg(result)},
+      \  { result -> zenn#cmd#echo_err(result)},
+      \ )
+      \.finally({ result -> zenn#cmd#echo_msg("zenn#new_book finished")})
 endfunction
 
 " ------------------------------------------------------------------------
