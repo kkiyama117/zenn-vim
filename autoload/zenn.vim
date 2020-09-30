@@ -65,12 +65,9 @@ endfunction
 " ------------------------------------------------------------------------
 " zenn#new_book: Create new book. {{{1
 "   Usage:  :call zenn#new_book() -- create new book.
-function! zenn#new_book(slug) abort
-  let l:args_str = ""
-  if exists("a:slug")
-    let l:args_str .= " --slug " . a:slug
-  endif
-  call zenn#cmd#zenn_command(["new:book", l:args_str])
+function! zenn#new_book(...) abort
+  let l:args = empty(a:000) ? [] : ["--slug", a:1]
+  call zenn#cmd#zenn_command(["new:book"] + l:args)
     echo "zenn create book"
 endfunction
 
