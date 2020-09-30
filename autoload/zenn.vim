@@ -25,7 +25,7 @@ function! zenn#init() abort
     call zenn#cmd#zenn_command(["init"])
   else
     call zenn#cmd#echo_err("zenn cli is not found!")
-    return false
+    return
   endif
     echo "zenn initialization successfully finished!"
 endfunction

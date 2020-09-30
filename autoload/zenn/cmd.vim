@@ -10,7 +10,6 @@ endfunction
 
 " run command
 function! zenn#cmd#run_command(args) abort
-  echohl ErrorMsg
   try
     let l:cmd = join(a:args, " ")
     " Todo: verbose or debug mode
