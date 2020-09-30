@@ -31,11 +31,12 @@ function! zenn#new_article(...) abort
       let l:args_dict["slug"] = a:1
     endif
     " create args from dict
-    let l:args_str = ""
+    let l:args = []
     for [key,value] in items(l:args_dict)
-      let l:args_str .= " --" . key . " " . value
+      call add(l:args, "--" . key)
+      call add(l:args, value)
     endfor
-    call zenn#cmd#zenn_command(["new:article", l:args_str])
+    call zenn#cmd#zenn_command(["new:article"] + l:args)
       \.then(
       \  { result -> zenn#cmd#echo_msg(result)},
       \  { result -> zenn#cmd#echo_err(result)},
