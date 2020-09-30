@@ -1,6 +1,6 @@
-*zenn_vim.txt*                                     zenn.dev extension for vim.
+*zenn.txt*                                         zenn.dev extension for vim.
 
-Version: 0.1.1
+Version: 0.3.1
 Author: kkiyama117 <k.kiyama117@gmail.com>
 License: GPLv3 license
 
@@ -43,19 +43,19 @@ EXAMPLES                                                   *zenn-vim-examples*
   " hoge
   " pynvim function
   " npx zenn init
-  command! -nargs=0 ZennInit call zenn_vim#init()
+  command! -nargs=0 ZennInit call zenn#init()
   " npm install zenn-cli@latest
-  command! -nargs=0 ZennUpdate call zenn_vim#update()
+  command! -nargs=0 ZennUpdate call zenn#update()
   " npx zenn preview
-  command! -nargs=* ZennPreview call zenn_vim#preview(<f-args>)
+  command! -nargs=* ZennPreview call zenn#preview(<f-args>)
   " npx zenn preview
-  command! -nargs=0 ZennStopPreview call zenn_vim#stop_preview()
+  command! -nargs=0 ZennStopPreview call zenn#stop_preview()
   
   " normal vim function
   " npx zenn new article
-  command! -nargs=* ZennNewArticle call zenn_vim#new_article(<f-args>)
+  command! -nargs=* ZennNewArticle call zenn#new_article(<f-args>)
   " npx zenn new book
-  command! -nargs=* ZennNewArticle call zenn_vim#new_book(<f-args>)
+  command! -nargs=* ZennNewArticle call zenn#new_book(<f-args>)
 >
 ==============================================================================
 INTERFACE                                                 *zenn-vim-interface*
@@ -65,25 +65,25 @@ FUNCTIONS                                                 *zenn-vim-functions*
 
 WIP.
 
-                                                             *zenn_vim#init()*
-zenn_vim#init()
+                                                                 *zenn#init()*
+    zenn#init()
         Install zenn-cli and run initialize script.
 
-                                                       *zenn_vim#cli_update()*
-zenn_vim#update()
+                                                           *zenn#cli_update()*
+    zenn#update()
         Update zenn-cli.
 
-                                                          *zenn_vim#preview()*
-zenn_vim#preview([{port}])
+                                                              *zenn#preview()*
+    zenn#preview([{port}])
         Run zenn-cli preview.
         {port} is port number preview server running.
         default is 8000
-                                                     *zenn_vim#stop_preview()*
-zenn_vim#stop_preview()
+                                                         *zenn#stop_preview()*
+    zenn#stop_preview()
         Kill zenn-cli preview server. 
 
-                                                      *zenn_vim#new_article()*
-zenn_vim#new_article([{slug},{title},{type},{emoji}])
+                                                          *zenn#new_article()*
+    zenn#new_article([{slug},{title},{type},{emoji}])
         Create new book.
         {slug} is file name, must be over 12 and below 60 charactors
         and need not to be duplicated. 
@@ -93,8 +93,8 @@ zenn_vim#new_article([{slug},{title},{type},{emoji}])
         {emoji} is a charactor uused as thumbnail.
         all emoji lists are at https://getemoji.com/
 
-                                                         *zenn_vim#new_book()*
-zenn_vim#new_book([{slug}])
+                                                             *zenn#new_book()*
+    zenn#new_book([{slug}])
         Create new book.
         {slug} is file name, must be over 12 and below 60 charactors
         and need not to be duplicated. 
