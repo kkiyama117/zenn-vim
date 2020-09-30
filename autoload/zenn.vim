@@ -8,27 +8,27 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if has('nvim')
-  function! zenn_vim#update() abort
+  function! zenn#update() abort
     return _zenn_update()
   endfunction
 
-  function! zenn_vim#preview(...) abort
+  function! zenn#preview(...) abort
     return _zenn_preview(a:000)
   endfunction
 
-  function! zenn_vim#stop_preview() abort
+  function! zenn#stop_preview() abort
     call _zenn_stop_preview()
   endfunction
 else
-  function! zenn_vim#update() abort
-    return zenn_vim#rplugin#update()
+  function! zenn#update() abort
+    return zenn#rplugin#update()
   endfunction
 
-  function! zenn_vim#preview() abort
-    return zenn_vim#rplugin#preview()
+  function! zenn#preview() abort
+    return zenn#rplugin#preview()
   endfunction
 
-  function! zenn_vim#rplugin#stop_preview() abort
+  function! zenn#rplugin#stop_preview() abort
   endfunction
 endif
 
@@ -68,9 +68,9 @@ function! s:zenn_command(...) abort
 endfunction
 
 " ------------------------------------------------------------------------
-" zenn_vim#init: Install zenn npm package and call initializer {{{1
-"   Usage:  :call zenn_vim#init() -- initialize
-function! zenn_vim#init() abort
+" zenn#init: Install zenn npm package and call initializer {{{1
+"   Usage:  :call zenn#init() -- initialize
+function! zenn#init() abort
   echo "zenn initialization start"
   call s:npm_command("init", "--yes")
   " check zenn-cli
@@ -89,7 +89,7 @@ function! zenn_vim#init() abort
 endfunction
 
 " Create new article.
-function! zenn_vim#new_article(...) abort
+function! zenn#new_article(...) abort
   if (a:0 >= 4)
     call s:echo_err("too much arguments!")
   else
@@ -116,7 +116,7 @@ function! zenn_vim#new_article(...) abort
 endfunction
 
 " Create new article.
-function! zenn_vim#new_book(slug) abort
+function! zenn#new_book(slug) abort
   let l:args_str = ""
   if exists("a:slug")
     let l:args_str .= " --slug " . a:slug
