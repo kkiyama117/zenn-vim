@@ -78,9 +78,11 @@ function! zenn#update() abort
   call zenn#cmd#echo_msg( "zenn-cli is updating ...")
   call zenn#cmd#npm_command(["i", "zenn-cli@latest"])
       \.then({ result -> 
-        \ zenn#cmd#echo_msg(result)
+        \ zenn#cmd#echo_msg(add(result, "update finished."))
       \})
-      \.catch({ result -> execute('echo ' . string(result), '') })
+      \.cache({ result -> 
+        \ zenn#cmd#echo_err(add(result, "update finished."))
+      \})
 endfunction
 
 " ------------------------------------------------------------------------
