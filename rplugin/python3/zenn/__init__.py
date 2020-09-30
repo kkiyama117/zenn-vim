@@ -12,7 +12,7 @@ try:
             self.preview_pid: typing.Optional[int] = None
 
         @pynvim.function("_zenn_update")
-        def zenn_update(self, args):
+        def update(self, args):
             zenn_update(self.nvim, args)
 
         @pynvim.function("_zenn_preview")
@@ -20,8 +20,8 @@ try:
             zenn_preview(self.nvim, args)
 
         @pynvim.function("_zenn_stop_preview", sync=True)
-        def kill_preview(self, args):
-            kill_preview(self.nvim, args)
+        def stop_preview(self, args):
+            zenn_stop_preview(self.nvim, args)
 
 
 except ImportError:
@@ -29,9 +29,8 @@ except ImportError:
 
 
 def zenn_update(nvim, args):
-    output.display_message(nvim, f"Zenn Update start. plz waiting.")
-    result = cmd.call_npm(nvim, ["install", "zenn-cli@latest"])
-    output.display_message(nvim, f"{result}")
+    output.display_message(nvim, f"Zenn Update start. plz waiting ...")
+    cmd.call_npm(nvim, ["install", "zenn-cli@latest"], daemon=True)
     output.display_message(nvim, f"Zenn Update finished successfully")
 
 
@@ -43,7 +42,7 @@ def zenn_preview(nvim, args):
     output.display_message(nvim, f"Zenn preview start at localhost:{port}")
 
 
-def kill_preview(self, args):
+def zenn_stop_preview(self, args):
     output.display_message(
         self.nvim, "Zenn preview is stop automatically with vim closing"
     )
