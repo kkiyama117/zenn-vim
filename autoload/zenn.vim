@@ -8,34 +8,11 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Functions
-
-" ------------------------------------------------------------------------
-" zenn#init: Install zenn npm package and call initializer {{{1
-"   Usage:  :call zenn#init() -- initialize
-function! zenn#init() abort
-  echo "zenn initialization start ..."
-  call zenn#cmd#npm_command(["init", "--yes"])
-  " check zenn-cli
-  if !filereadable("node_modules/.bin/zenn")
-    call zenn#cmd#npm_command(["i","zenn-cli"])
-  else
-    echo "`zenn-cli` is already installed. zenn-cli installation is passed."
-  endif
-  if filereadable("node_modules/.bin/zenn")
-    call zenn#cmd#zenn_command(["init"])
-  else
-    call zenn#cmd#echo_err("zenn cli is not found!")
-    return
-  endif
-    echo "zenn initialization successfully finished!"
-endfunction
-
 " ------------------------------------------------------------------------
 " zenn#new_article: Create new article. {{{1
 "   Usage:  :call zenn#new_article() -- create new article
 "           :call zenn#new_article(slug) -- create new article with slug.
 "           :call zenn#new_article(slug, title, type, emoji) -- create new article with args.
-"
 function! zenn#new_article(...) abort
   if (a:0 >= 4)
     call zenn#cmd#echo_err("too much arguments!")
@@ -77,12 +54,11 @@ endfunction
 function! zenn#update() abort
   call zenn#cmd#echo_msg( "zenn-cli is updating ...")
   call zenn#cmd#npm_command(["i", "zenn-cli@latest"])
-      \.then({ result -> 
-        \ zenn#cmd#echo_msg(add(result, "update finished."))
-      \})
-      \.cache({ result -> 
-        \ zenn#cmd#echo_err(add(result, "update finished."))
-      \})
+      \.then(
+      \  { result -> zenn#cmd#echo_msg(result)},
+      \  { result -> zenn#cmd#echo_err(result)},
+      \ )
+      \.finally({ result -> zenn#cmd#echo_msg("zenn#update finished")})
 endfunction
 
 " ------------------------------------------------------------------------
@@ -90,30 +66,8 @@ endfunction
 "   Usage:  :call zenn#preview() -- start server on localhost:8000`
 "           :call zenn#preview(port) -- start server on localhost:{port}`
 function! zenn#preview(...) abort
-  return s:_zenn_preview((empty(a:000) ? [] : [a:1]))
+"  return s:_zenn_preview((empty(a:000) ? [] : [a:1]))
 endfunction
-
-function! zenn#test() abort
-  echo zenn#cmd#test()
-endfunction
-
-" Call Python func(Correspondence for difference vim8 and neovim)
-if has('nvim')
-  function! s:zenn_preview(args) abort
-    call _zenn_preview(a:args)
-  endfunction
-
-  function! s:zenn_stop_preview() abort
-    call _zenn_stop_preview()
-  endfunction
-else
-  function! s:zenn_preview(args) abort
-    call zenn#rplugin#preview(a:args)
-  endfunction
-
-  function! s:zenn_stop_preview() abort
-  endfunction
-endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

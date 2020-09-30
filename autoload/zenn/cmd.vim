@@ -14,10 +14,10 @@ endfunction
 
 " show error message
 function! zenn#cmd#echo_msg(msg, ...) abort
-  if a:0 == 0
-    const l:debug = v:false
-  else
+  if a:0 >= 1
     const l:debug = a:1
+  else
+    const l:debug = v:false
   endif
   echohl None
   if type(a:msg) == v:t_string
@@ -38,10 +38,10 @@ endfunction
 
 " show error message
 function! zenn#cmd#echo_err(msg, ...) abort
-  if a:0 == 0
-    const l:debug = v:false
-  else
+  if a:0 >= 1
     const l:debug = a:1
+  else
+    const l:debug = v:false
   endif
   echohl ErrorMsg
   if type(a:msg) == v:t_string
@@ -58,7 +58,6 @@ function! zenn#cmd#echo_err(msg, ...) abort
       echo "zenn-vim:\n" . l:msg
     endif
   endif
-    const l:debug = a:1
   echohl None
 endfunction
 
@@ -108,6 +107,7 @@ function zenn#cmd#run_job(commands) abort
         " \ 'exit_status': -1,
 endfunction
 
+" get command as promice of job
 function zenn#cmd#get_job_promise(commands, ...) abort
   const l:chain = exists("a:1") ? a:1 : v:false
   let l:stdout = exists("a:2") ? a:2 : ['']
@@ -121,17 +121,6 @@ function zenn#cmd#get_job_promise(commands, ...) abort
         \   }
         \ })
         \})
-endfunction
-
-function! zenn#cmd#test() abort
-  let l:jobs = []
-  call add(l:jobs, { -> zenn#cmd#get_job_promise(["ls", "-al"])})
-  " .then({ result -> execute('echo ' . string(result), '') })
-    " \.catch({ result -> execute('echo ' . string(result), '') })
-  const result = s:get_promise().chain(l:jobs)
-      \.then({ result -> execute('echo ' . string(result), '') })
-      \.catch({ result -> execute('echo ' . string(result), '') })
-  return result
 endfunction
 
 " run npm command
@@ -150,5 +139,17 @@ endfunction
 
 " run npx zenn command
 function! zenn#cmd#zenn_command(args) abort
-  return zenn#cmd#run_command(["npx", "zenn"] + a:args)
+  let l:jobs = []
+  " check zenn-cli
+  if !filereadable("node_modules/.bin/zenn")
+    call zenn#cmd#echo_err("zenn cli is not found! Start installing ...")
+    if !isdirectory("node_modules")
+      call zenn#cmd#echo_msg("node_modules does not exist. initializing npm ...")
+      call add(l:jobs, { -> zenn#cmd#get_job_promise(["npm", "init", "--yes"])})
+    endif
+    call add(l:jobs, { -> zenn#cmd#get_job_promise(["npm", "i", "zenn-cli"])})
+    call add(l:jobs, { -> zenn#cmd#get_job_promise(["npx", "zenn", "init"])})
+  endif
+  call add(l:jobs, { -> zenn#cmd#get_job_promise(["npx", "zenn"] + a:args)})
+  return s:get_promise().chain(l:jobs)
 endfunction
