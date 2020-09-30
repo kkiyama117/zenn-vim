@@ -14,15 +14,15 @@ set cpo&vim
 "   Usage:  :call zenn#init() -- initialize
 function! zenn#init() abort
   echo "zenn initialization start ..."
-  call zenn#cmd#npm_command("init", "--yes")
+  call zenn#cmd#npm_command(["init", "--yes"])
   " check zenn-cli
   if !filereadable("node_modules/.bin/zenn")
-    call zenn#cmd#npm_command("i","zenn-cli")
+    call zenn#cmd#npm_command(["i","zenn-cli"])
   else
     echo "`zenn-cli` is already installed. zenn-cli installation is passed."
   endif
   if filereadable("node_modules/.bin/zenn")
-    call zenn#cmd#zenn_command("init")
+    call zenn#cmd#zenn_command(["init"])
   else
     call zenn#cmd#echo_err("zenn cli is not found!")
     return false
@@ -58,9 +58,8 @@ function! zenn#new_article(...) abort
     for [key,value] in items(l:args_dict)
       let l:args_str .= " --" . key . " " . value
     endfor
-    call zenn#cmd#zenn_command("new:article", l:args_str)
+    call zenn#cmd#zenn_command(["new:article", l:args_str])
   endif
-    echo "zenn create article"
 endfunction
 
 " ------------------------------------------------------------------------
@@ -71,7 +70,7 @@ function! zenn#new_book(slug) abort
   if exists("a:slug")
     let l:args_str .= " --slug " . a:slug
   endif
-  call zenn#cmd#zenn_command("new:book", l:args_str)
+  call zenn#cmd#zenn_command(["new:book", l:args_str])
     echo "zenn create book"
 endfunction
 

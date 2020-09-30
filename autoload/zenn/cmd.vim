@@ -12,16 +12,16 @@ endfunction
 function! zenn#cmd#run_command(args) abort
   echohl ErrorMsg
   try
-    let l:cmd = join(a:000, " ")
+    let l:cmd = join(a:args, " ")
     " Todo: verbose or debug mode
-    call system(l:cmd)
+    echomsg system(l:cmd)
   catch
     call zenn#cmd#echo_err("Error occured")
   endtry
 endfunction
 
 " run npm command
-function! zenn#cmd#npm_command(...) abort
+function! zenn#cmd#npm_command(args) abort
   " check node_modules
   if !isdirectory("node_modules")
     echo "node_modules is exists. initialize npm."
@@ -29,10 +29,10 @@ function! zenn#cmd#npm_command(...) abort
   else
     " Todo: verbose mode
   endif
-    return zenn#cmd#run_command(["npm"] + a:000)
+    return zenn#cmd#run_command(["npm"] + a:args)
 endfunction
 
 " run npx zenn command
-function! zenn#cmd#zenn_command(...) abort
-  return zenn#cmd#run_command(["npx", "zenn"] + a:000)
+function! zenn#cmd#zenn_command(args) abort
+  return zenn#cmd#run_command(["npx", "zenn"] + a:args)
 endfunction
