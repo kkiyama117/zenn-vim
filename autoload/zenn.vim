@@ -60,6 +60,7 @@ function! zenn#new_article(...) abort
     endfor
     call zenn#cmd#zenn_command("new:article", l:args_str)
   endif
+    echo "zenn create article"
 endfunction
 
 " ------------------------------------------------------------------------
@@ -71,6 +72,7 @@ function! zenn#new_book(slug) abort
     let l:args_str .= " --slug " . a:slug
   endif
   call zenn#cmd#zenn_command("new:book", l:args_str)
+    echo "zenn create book"
 endfunction
 
 " ------------------------------------------------------------------------

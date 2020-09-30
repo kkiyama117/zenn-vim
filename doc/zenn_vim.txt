@@ -55,7 +55,7 @@ EXAMPLES                                                   *zenn-vim-examples*
   " npx zenn new article
   command! -nargs=* ZennNewArticle call zenn#new_article(<f-args>)
   " npx zenn new book
-  command! -nargs=* ZennNewArticle call zenn#new_book(<f-args>)
+  command! -nargs=* ZennNewBook call zenn#new_book(<f-args>)
 >
 ==============================================================================
 INTERFACE                                                 *zenn-vim-interface*
