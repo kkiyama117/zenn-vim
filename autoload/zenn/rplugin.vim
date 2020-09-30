@@ -39,7 +39,7 @@ del _temporary_scope
 EOC
 endfunction
 
-function! zenn_vim#rplugin#preview(...) abort
+function! zenn_vim#rplugin#preview(args)abort
   if !zenn_vim#rplugin#init()
     return
   endif
@@ -50,7 +50,7 @@ def _temporary_scope():
 
     # Decorate vim instance with Neovim proxy class
     nvim = rplugin.Neovim(vim)
-    zenn_preview(nvim, [nvim.eval('a:000')])
+    zenn_preview(nvim, [nvim.eval('a:args')])
 _temporary_scope()
 del _temporary_scope
 EOC
