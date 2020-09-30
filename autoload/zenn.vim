@@ -66,7 +66,7 @@ endfunction
 " zenn#new_book: Create new book. {{{1
 "   Usage:  :call zenn#new_book() -- create new book.
 function! zenn#new_book(...) abort
-  let l:args = empty(a:000) ? [] : ["--slug", a:1]
+  const l:args = empty(a:000) ? [] : ["--slug", a:1]
   call zenn#cmd#zenn_command(["new:book"] + l:args)
     echo "zenn create book"
 endfunction
@@ -75,7 +75,12 @@ endfunction
 " zenn#update: Update zenn npm package. {{{1
 "   Usage:  :call zenn#update() -- update
 function! zenn#update() abort
-  return s:zenn_update()
+  call zenn#cmd#echo_msg( "zenn-cli is updating ...")
+  call zenn#cmd#npm_command(["i", "zenn-cli@latest"])
+      \.then({ result -> 
+        \ zenn#cmd#echo_msg(result)
+      \})
+      \.catch({ result -> execute('echo ' . string(result), '') })
 endfunction
 
 " ------------------------------------------------------------------------
@@ -86,12 +91,12 @@ function! zenn#preview(...) abort
   return s:_zenn_preview((empty(a:000) ? [] : [a:1]))
 endfunction
 
+function! zenn#test() abort
+  echo zenn#cmd#test()
+endfunction
+
 " Call Python func(Correspondence for difference vim8 and neovim)
 if has('nvim')
-  function! s:zenn_update() abort
-    call _zenn_update()
-  endfunction
-
   function! s:zenn_preview(args) abort
     call _zenn_preview(a:args)
   endfunction
@@ -100,10 +105,6 @@ if has('nvim')
     call _zenn_stop_preview()
   endfunction
 else
-  function! s:zenn_update() abort
-    call zenn#rplugin#update()
-  endfunction
-
   function! s:zenn_preview(args) abort
     call zenn#rplugin#preview(a:args)
   endfunction
