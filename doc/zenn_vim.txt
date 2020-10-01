@@ -55,16 +55,17 @@ EXAMPLES                                                   *zenn-vim-examples*
   " npm install zenn-cli@latest
   command! -nargs=0 ZennUpdate call zenn#update()
 
-  " npx zenn preview
+  " Run npx zenn preview
+  " call "|:ZennPreview| or |:ZennPreview {port}|
   command! -nargs=* ZennPreview call zenn#preview(<f-args>)
 
-  " npx zenn preview
+  " Stop zenn preview process 
   command! -nargs=0 ZennStopPreview call zenn#stop_preview()
 
-  " npx zenn new article
+  " Create zenn new article
   command! -nargs=* ZennNewArticle call zenn#new_article(<f-args>)
 
-  " npx zenn new book
+  " Create zenn new book
   command! -nargs=* ZennNewBook call zenn#new_book(<f-args>)
 >
 ==============================================================================
@@ -77,17 +78,19 @@ WIP.
 
                                                                *zenn#update()*
     zenn#update()
-        Update zenn-cli.
+        Update zenn-cli asynchronously.
 
                                                               *zenn#preview()*
     zenn#preview([{port}])
         Run zenn-cli preview.
         {port} is port number preview server running.
-        default is 8000
+        default is 8000. this server process runs on vim process and
+        killed when all buffers are closed. 
 
                                                          *zenn#stop_preview()*
     zenn#stop_preview()
-        Kill zenn-cli preview server. 
+        Kill zenn-cli preview server( only if process is made by
+        this plugin). this specification may be changed in the future.
 
                                                           *zenn#new_article()*
     zenn#new_article([{slug},{title},{type},{emoji}])

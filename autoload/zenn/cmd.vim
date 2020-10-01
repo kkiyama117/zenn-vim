@@ -12,92 +12,25 @@ function! s:get_promise() abort
   return s:Promise
 endfunction
 
-" show error message
-function! zenn#cmd#echo_msg(msg, ...) abort
-  if a:0 >= 1
-    const l:debug = a:1
-  else
-    const l:debug = v:false
-  endif
-  echohl None
-  if type(a:msg) == v:t_string
-    if l:debug
-      echomsg "zenn-vim: " . a:msg
-    else
-      echo "zenn-vim: " . a:msg
-    endif
-  elseif type(a:msg) == v:t_list
-    const l:msg = l:debug ? join(a:msg) : join(a:msg, "\n")
-    if l:debug
-      echomsg "zenn-vim: " . l:msg
-    else
-      echo "zenn-vim:\n" . l:msg
-    endif
-  endif
+" =============================================================================
+function! s:echo_promise(msg)
+  return s:get_promise().new({_ -> zenn#echo#echo_msg(a:msg)})
 endfunction
 
-" show error message
-function! zenn#cmd#echo_err(msg, ...) abort
-  if a:0 >= 1
-    const l:debug = a:1
-  else
-    const l:debug = v:false
-  endif
-  echohl ErrorMsg
-  if type(a:msg) == v:t_string
-    if l:debug
-      echomsg "zenn-vim: " . a:msg
-    else
-      echo "zenn-vim: " . a:msg
-    endif
-  elseif type(a:msg) == v:t_list
-    const l:msg = l:debug ? join(a:msg) : join(a:msg, "\n")
-    if l:debug
-      echomsg "zenn-vim: " . l:msg
-    else
-      echo "zenn-vim:\n" . l:msg
-    endif
-  endif
-  echohl None
-endfunction
-
-function! s:on_stdout(data) abort dict
-  let self.stdout[-1] .= a:data[0]
-  call extend(self.stdout, a:data[1:])
-endfunction
-
-function! s:on_stderr(data) abort dict
-  let self.stderr[-1] .= a:data[0]
-  call extend(self.stderr, a:data[1:])
-endfunction
-
-function! s:on_exit(exitval) abort dict
-  let self.exit_status = a:exitval
+function! s:echo_err_promise(msg)
+  return s:get_promise().new({_ -> zenn#echo#echo_err(a:msg)})
 endfunction
 
 function! s:on_receive(buffer, data) abort dict
-  let a:buffer[-1] .= a:data[0]
-  call extend(a:buffer, a:data[1:])
+  call extend(a:buffer, a:data)
 endfunction
 
 function! s:on_exit_promise(rv, rj, code) abort dict
   return code ? rj(join(stderr, "\n")) : rv(join(stdout, "\n"))
 endfunction
 
-" run command as job
-function zenn#cmd#run_job(commands) abort
-  return s:get_job().start(a:commands, {
-        \ 'stdout': [''],
-        \ 'stderr': [''],
-        \ 'on_stdout': function('s:on_stdout'),
-        \ 'on_stderr': function('s:on_stderr'),
-        \ 'on_exit': function('s:on_exit'),
-        \})
-        " \ 'exit_status': -1,
-endfunction
-
 " get command as promice of job
-function zenn#cmd#get_job_promise(commands, ...) abort
+function s:sh(commands, ...) abort
   const l:chain = exists("a:1") ? a:1 : v:false
   let l:stdout = exists("a:2") ? a:2 : ['']
   let l:stderr = exists("a:3") ? a:3 : ['']
@@ -112,54 +45,77 @@ function zenn#cmd#get_job_promise(commands, ...) abort
         \})
 endfunction
 
-" run npm command
-function! zenn#cmd#npm_promise(args) abort
+function s:initNpmPromiseList() abort
   let l:jobs = []
   " check node_modules
-  if !isdirectory("node_modules")
-    call zenn#cmd#echo_msg("node_modules does not exist. initializing npm.")
-    call add(l:jobs, { -> zenn#cmd#get_job_promise(["npm", "init", "--yes"])})
-  else
-    " Todo: verbose mode
-  endif
-  call add(l:jobs, { -> zenn#cmd#get_job_promise(["npm"] + a:args)})
-  return s:get_promise().chain(l:jobs)
+    if !isdirectory("node_modules")
+      call add(l:jobs, { -> s:echo_promise("node_modules does not exist." 
+            \." initializing npm ...")})
+      call add(l:jobs, { -> s:sh(["npm", "init", "--yes"])})
+      call add(l:jobs, { -> s:echo_promise("npm initialized.")})
+    endif
+  return l:jobs
 endfunction
 
 " run npm command
-function! zenn#cmd#zenn_job(args) abort
-  let l:jobs = []
-  " check node_modules
-  if !isdirectory("node_modules")
-    call zenn#cmd#echo_err("zenn cli is not found! Start installing ...")
-    if !isdirectory("node_modules")
-      call zenn#cmd#echo_msg("node_modules does not exist. initializing npm ...")
-      call add(l:jobs, { -> zenn#cmd#get_job_promise(["npm", "init", "--yes"])})
-      call add(l:jobs, { -> zenn#cmd#get_job_promise(["npm", "i", "zenn-cli"])})
-    endif
-    call add(l:jobs, { -> zenn#cmd#get_job_promise(["npx", "zenn", "init"])})
+function! zenn#cmd#npm_promise(args) abort
+  let l:jobs = s:initNpmPromiseList()
+  call add(l:jobs, { -> s:sh(["npm"] + a:args)})
+  return s:get_promise().chain(l:jobs)
+endfunction
+
+" Initialize process
+function s:initZennPromiseList() abort
+  let l:jobs = s:initNpmPromiseList()
+  " check zenn-cli
+  if !filereadable("node_modules/.bin/zenn")
+    call add(l:jobs, { -> s:echo_promise("zenn cli is not found!" . 
+          \" Start installing ...")})
+    call add(l:jobs, { -> s:sh(["npm", "i", "zenn-cli@latest"])})
+    call add(l:jobs, { -> s:echo_promise("zenn cli is installed!")})
+    call add(l:jobs, { -> s:sh(["npx", "zenn", "init"])})
+  elseif !isdirectory("articles") || !isdirectory("books")
+    call add(l:jobs, { -> s:sh(["npx", "zenn", "init"])})
   endif
-  if empty(l:jobs)
-    call s:get_promise().chain(l:jobs).catch(
-          \ { result -> zenn#cmd#echo_err(result)}
-          \)
-  endif
-  return zenn#cmd#run_job(["npx","zenn"] + a:args)
+  call add(l:jobs, { -> s:echo_promise("zenn cli initialization finished.")})
+  return l:jobs
 endfunction
 
 " run npx zenn command
 function! zenn#cmd#zenn_promise(args) abort
-  let l:jobs = []
-  " check zenn-cli
-  if !filereadable("node_modules/.bin/zenn")
-    call zenn#cmd#echo_err("zenn cli is not found! Start installing ...")
-    if !isdirectory("node_modules")
-      call zenn#cmd#echo_msg("node_modules does not exist. initializing npm ...")
-      call add(l:jobs, { -> zenn#cmd#get_job_promise(["npm", "init", "--yes"])})
-      call add(l:jobs, { -> zenn#cmd#get_job_promise(["npm", "i", "zenn-cli"])})
-    endif
-    call add(l:jobs, { -> zenn#cmd#get_job_promise(["npx", "zenn", "init"])})
-  endif
-  call add(l:jobs, { -> zenn#cmd#get_job_promise(["npx", "zenn"] + a:args)})
+  let l:jobs = s:initZennPromiseList()
+  call add(l:jobs, { -> s:sh(["npx", "zenn"] + a:args)})
   return s:get_promise().chain(l:jobs)
+endfunction
+
+function! s:on_stdout(data) abort dict
+  let self.stdout[-1] .= a:data[0]
+  call extend(self.stdout, a:data[1:])
+endfunction
+function! s:on_stderr(data) abort dict
+  let self.stderr[-1] .= a:data[0]
+  call extend(self.stderr, a:data[1:])
+endfunction
+function! s:on_exit(exitval) abort dict
+  let self.exit_status = a:exitval
+endfunction
+
+  " run npx zenn command
+function! zenn#cmd#zenn_job(args) abort
+  let l:jobs = s:initZennPromiseList()
+  if empty(l:jobs)
+    let l:chain =s:get_promise().chain(l:jobs)
+    let [result, error] = s:get_promise().wait(l:chain)
+    if error isnot# v:null
+      echoerr "Init Failed:" . string(error)
+      return v:null
+    endif
+  endif
+  return s:get_job().start(['npx', 'zenn'] + a:args, {
+          \ 'stdout': [''],
+          \ 'stderr': [''],
+          \ 'on_stdout': function('s:on_stdout'),
+          \ 'on_stderr': function('s:on_stderr'),
+          \ 'on_exit': function('s:on_exit'),
+          \})
 endfunction
