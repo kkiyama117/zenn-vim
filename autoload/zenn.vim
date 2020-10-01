@@ -36,7 +36,7 @@ function! zenn#new_article(...) abort
       call add(l:args, "--" . key)
       call add(l:args, value)
     endfor
-    call zenn#cmd#zenn_command(["new:article"] + l:args)
+    call zenn#cmd#zenn_promise(["new:article"] + l:args)
       \.then(
       \  { result -> zenn#cmd#echo_msg(result)},
       \  { result -> zenn#cmd#echo_err(result)},
@@ -50,7 +50,7 @@ endfunction
 "   Usage:  :call zenn#new_book() -- create new book.
 function! zenn#new_book(...) abort
   const l:args = empty(a:000) ? [] : ["--slug", a:1]
-  call zenn#cmd#zenn_command(["new:book"] + l:args)
+  call zenn#cmd#zenn_promise(["new:book"] + l:args)
       \.then(
       \  { result -> zenn#cmd#echo_msg(result)},
       \  { result -> zenn#cmd#echo_err(result)},
@@ -63,7 +63,7 @@ endfunction
 "   Usage:  :call zenn#update() -- update
 function! zenn#update() abort
   call zenn#cmd#echo_msg( "zenn-cli is updating ...")
-  call zenn#cmd#npm_command(["i", "zenn-cli@latest"])
+  call zenn#cmd#npm_promise(["i", "zenn-cli@latest"])
       \.then(
       \  { result -> zenn#cmd#echo_msg(result)},
       \  { result -> zenn#cmd#echo_err(result)},
@@ -76,19 +76,15 @@ endfunction
 "   Usage:  :call zenn#preview() -- start server on localhost:8000`
 "           :call zenn#preview(port) -- start server on localhost:{port}`
 function! zenn#preview(...) abort
-  const l:port = exists("a.1") ? a:1 : v:null
+  const l:command = exists("a:1") ? ["preview", "--port", string(a:1)]
+    \: ["preview"]
   const l:port_str = exists("a.1") ? a:1 : "8000"
-  call zenn#cmd#echo_msg( "zenn-cli start on localhost:" . l:port_str . "...")
-  let l:command = ["preview"]
-  if l:port != v:null
-    l:command = l:command + ["--port", l:port_str]
+  call zenn#cmd#echo_msg("zenn-cli try starting preview server on localhost:"
+    \. l:port_str . "...")
+  if exists("s:preview_job") && !empty(s:preview_job)
+    call zenn#cmd#echo_msg("preview is already running")
   endif
-  call zenn#cmd#zenn_command(["preview"] + l:command)
-      \.then(
-      \  { result -> zenn#cmd#echo_msg(result)},
-      \  { result -> zenn#cmd#echo_err(result)},
-      \ )
-      \.finally({ result -> zenn#cmd#echo_msg("zenn#preview" . "finished")})
+  let s:preview_job = zenn#cmd#zenn_job(l:command)
 "  return s:_zenn_preview((empty(a:000) ? [] : [a:1]))
 endfunction
 
@@ -96,8 +92,13 @@ endfunction
 " ------------------------------------------------------------------------
 " zenn#stop_preview: start preview server. {{{1
 "   Usage:  :call zenn#stop_preview() -- stop server.
-function! zenn#stop_preview(job) abort
-  call a:job.kill()
+function! zenn#stop_preview() abort
+  if exists("s:preview_job") && !empty(s:preview_job)
+    call s:preview_job.stop()
+    let s:preview_job = {}
+  else
+    call zenn#cmd#echo_msg("preview is not running")
+  endif
 endfunction
 
 
