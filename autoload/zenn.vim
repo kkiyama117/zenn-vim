@@ -76,8 +76,30 @@ endfunction
 "   Usage:  :call zenn#preview() -- start server on localhost:8000`
 "           :call zenn#preview(port) -- start server on localhost:{port}`
 function! zenn#preview(...) abort
+  const l:port = exists("a.1") ? a:1 : v:null
+  const l:port_str = exists("a.1") ? a:1 : "8000"
+  call zenn#cmd#echo_msg( "zenn-cli start on localhost:" . l:port_str . "...")
+  let l:command = ["preview"]
+  if l:port != v:null
+    l:command = l:command + ["--port", l:port_str]
+  endif
+  call zenn#cmd#zenn_command(["preview"] + l:command)
+      \.then(
+      \  { result -> zenn#cmd#echo_msg(result)},
+      \  { result -> zenn#cmd#echo_err(result)},
+      \ )
+      \.finally({ result -> zenn#cmd#echo_msg("zenn#preview" . "finished")})
 "  return s:_zenn_preview((empty(a:000) ? [] : [a:1]))
 endfunction
+
+
+" ------------------------------------------------------------------------
+" zenn#stop_preview: start preview server. {{{1
+"   Usage:  :call zenn#stop_preview() -- stop server.
+function! zenn#stop_preview(job) abort
+  call a:job.kill()
+endfunction
+
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

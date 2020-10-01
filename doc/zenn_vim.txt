@@ -1,7 +1,7 @@
 *zenn.txt*                                         zenn.dev extension for vim.
 
-Version: 0.3.1
-Author: kkiyama117 <k.kiyama117@gmail.com>
+Version: 0.4.1
+Author: kkiyama117 <k.kiyama117@gmail.com>                       *zenn-author*
 License: GPLv3 license
 
 ==============================================================================
@@ -28,8 +28,7 @@ able to be used in other editor also.
 INSTALL                                                     *zenn-vim-install*
 
 Requirements~
-
-- Neovim or vim8.
+- Neovim or Vim8~
   - this plugin uses Async Feature (channels, jobs, e.t.c.).
   - include vital.vim (https://github.com/vim-jp/vital.vim).
     this plugin uses
@@ -39,7 +38,7 @@ Requirements~
       - The latest major version (8.2.*)
       - The previous major version (8.1.*)
     now.
-- npm
+- Npm(with npx)~
   - zenn official doesn't specify nodejs version number,
     but I recommend using its latest lts version.
   - (neo)vim node js support is not needed because it is called as system
@@ -85,6 +84,7 @@ WIP.
         Run zenn-cli preview.
         {port} is port number preview server running.
         default is 8000
+
                                                          *zenn#stop_preview()*
     zenn#stop_preview()
         Kill zenn-cli preview server. 
@@ -132,4 +132,4 @@ Note:
     in future.
 
 ==============================================================================
-vim:ft=help:tw=78:sw=4:ts=8:sts=0:nosta:norl:noet:fen:fdm=marker:fdl=0
+vim:tw=78:ts=4:sts=0:ft=help:nosta:norl:noet:fen:fdm=marker:fdl=0:
