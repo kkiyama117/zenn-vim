@@ -1,7 +1,7 @@
 *zenn.txt*                                         zenn.dev extension for vim.
 
-Version: 0.3.1
-Author: kkiyama117 <k.kiyama117@gmail.com>
+Version: 0.4.1
+Author: kkiyama117 <k.kiyama117@gmail.com>                       *zenn-author*
 License: GPLv3 license
 
 ==============================================================================
@@ -27,34 +27,45 @@ able to be used in other editor also.
 ==============================================================================
 INSTALL                                                     *zenn-vim-install*
 
-                                                            *zenn-vim-install*
 Requirements~
+- Neovim or Vim8~
+  - this plugin uses Async Feature (channels, jobs, e.t.c.).
+  - include vital.vim (https://github.com/vim-jp/vital.vim).
+    this plugin uses
+      - Async.Promise
+      - System.Job (from https://github.com/lambdalisue/vital-Whisky)
+    and supports
+      - The latest major version (8.2.*)
+      - The previous major version (8.1.*)
+    now.
+- Npm(with npx)~
+  - zenn official doesn't specify nodejs version number,
+    but I recommend using its latest lts version.
+  - (neo)vim node js support is not needed because it is called as system
+    command.
 
-- Neovim or vim alternative(Required to be work with coc-nvim).
-- coc-nvim and its requirements
-- (Optional) vim plugin manager. (If you use non-default branch version)
 
-Now configure this plugin if needed. (Refer to |zenn-vim-options|)
+After that, configure your vimrc to call functions.
+(See |zenn-vim-examples|, |zenn-vim-options|).
 
 ==============================================================================
 EXAMPLES                                                   *zenn-vim-examples*
 
 >
-  " hoge
-  " pynvim function
-  " npx zenn init
-  command! -nargs=0 ZennInit call zenn#init()
   " npm install zenn-cli@latest
   command! -nargs=0 ZennUpdate call zenn#update()
-  " npx zenn preview
+
+  " Run npx zenn preview
+  " call "|:ZennPreview| or |:ZennPreview {port}|
   command! -nargs=* ZennPreview call zenn#preview(<f-args>)
-  " npx zenn preview
+
+  " Stop zenn preview process 
   command! -nargs=0 ZennStopPreview call zenn#stop_preview()
-  
-  " normal vim function
-  " npx zenn new article
+
+  " Create zenn new article
   command! -nargs=* ZennNewArticle call zenn#new_article(<f-args>)
-  " npx zenn new book
+
+  " Create zenn new book
   command! -nargs=* ZennNewBook call zenn#new_book(<f-args>)
 >
 ==============================================================================
@@ -65,39 +76,38 @@ FUNCTIONS                                                 *zenn-vim-functions*
 
 WIP.
 
-                                                                 *zenn#init()*
-    zenn#init()
-        Install zenn-cli and run initialize script.
-
-                                                           *zenn#cli_update()*
+                                                               *zenn#update()*
     zenn#update()
-        Update zenn-cli.
+        Update zenn-cli asynchronously.
 
                                                               *zenn#preview()*
     zenn#preview([{port}])
         Run zenn-cli preview.
         {port} is port number preview server running.
-        default is 8000
+        default is 8000. this server process runs on vim process and
+        killed when all buffers are closed. 
+
                                                          *zenn#stop_preview()*
     zenn#stop_preview()
-        Kill zenn-cli preview server. 
+        Kill zenn-cli preview server( only if process is made by
+        this plugin). this specification may be changed in the future.
 
                                                           *zenn#new_article()*
     zenn#new_article([{slug},{title},{type},{emoji}])
         Create new book.
-        {slug} is file name, must be over 12 and below 60 charactors
-        and need not to be duplicated. 
+        {slug} is file name, must be over 12 and below 50 charactors
+        and need not to be duplicated. you can use (a-z0-9) and '-'.
         if it's not set, zenn-cli generate rundom slug.
         {title} is title of article.
-        {type} is type of article, choose from [`"tech"`,`"idea"`].
+        {type} is type of article, choose from [`"tech"`, `"idea"`].
         {emoji} is a charactor uused as thumbnail.
         all emoji lists are at https://getemoji.com/
 
                                                              *zenn#new_book()*
     zenn#new_book([{slug}])
         Create new book.
-        {slug} is file name, must be over 12 and below 60 charactors
-        and need not to be duplicated. 
+        {slug} is file name, must be over 12 and below 50 charactors
+        and need not to be duplicated. you can use (a-z0-9) and '-'.
         if it's not set, zenn-cli generate rundom slug.
 
 ------------------------------------------------------------------------------
@@ -113,7 +123,7 @@ COMMANDS                                                   *zenn-vim-commands*
 This plugin has no commands but you can create commands with
 |zenn-vim-functions| as you like.
 Note:
-    there are command examples
+    there are command examples at |zenn-vim-examples|
 
 ------------------------------------------------------------------------------
 OPTIONS                                                     *zenn-vim-options*
@@ -121,8 +131,8 @@ OPTIONS                                                     *zenn-vim-options*
 WIP.
 
 Note:
-    there are no commands now, but some options for format, copy, and actions
+    there are no options now, but some options for format, copy, and actions
     in future.
 
 ==============================================================================
-vim:ft=help:tw=78:sw=4:ts=8:sts=0:nosta:norl:noet:fen:fdm=marker:fdl=0
+vim:tw=78:ts=4:sts=0:ft=help:nosta:norl:noet:fen:fdm=marker:fdl=0:
