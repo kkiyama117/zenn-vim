@@ -5,9 +5,6 @@
 ## Required
 
 - vim or neovim
-  - Install [lambdalisue/vim-rplugin](https://github.com/lambdalisue/vim-rplugin)
-  as well if you want to make it available on Vim8.
-
 - npm
   - zenn official doesn't specify nodejs version number, but I recommend using
     its latest lts version.
