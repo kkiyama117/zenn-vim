@@ -41,7 +41,7 @@ function! zenn#preview#preview(port) abort
         \. " localhost: " . a:port . " ...")
   endif
   " run server
-  let s:preview_job = zenn#cmd#zenn_promise(s:server(l:command))
+  let s:preview_job = s:server(l:command)
   if type(s:preview_job) == v:null
     call zenn#echo#echo_msg("preview job is not created")
     return
@@ -49,7 +49,7 @@ function! zenn#preview#preview(port) abort
 endfunction
 
 function! zenn#preview#stop_preview() abort
-  if exists("s:preview_job") && !type(s:preview_job) != v:null
+  if exists("s:preview_job") && type(s:preview_job) != v:null
     call s:preview_job.stop()
     let s:preview_job = v:null
     call zenn#echo#echo_msg("preview is stopped!")
