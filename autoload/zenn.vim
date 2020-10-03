@@ -42,7 +42,7 @@ function! zenn#new_article(...) abort
       \.catch(
       \  { arr -> zenn#echo#echo_err(arr)}
       \ )
-      \.finally({ result -> zenn#echo#echo_msg("zenn#new_article finished")})
+      \.finally({ _ -> zenn#echo#echo_msg("zenn#new_article finished")})
   endif
 endfunction
 
@@ -57,7 +57,7 @@ function! zenn#new_book(...) abort
       \.catch(
       \  { arr -> zenn#echo#echo_err(arr)}
       \ )
-      \.finally({ result -> zenn#echo#echo_msg("zenn#new_book finished")})
+      \.finally({ _ -> zenn#echo#echo_msg("zenn#new_book finished")})
 endfunction
 
 " ------------------------------------------------------------------------
@@ -71,7 +71,7 @@ function! zenn#update() abort
       \.catch(
       \  { arr -> zenn#echo#echo_err(arr)}
       \ )
-      \.finally({ result -> zenn#echo#echo_msg("zenn#update finished")})
+      \.finally({ _ -> zenn#echo#echo_msg("zenn#update finished")})
 endfunction
 
 " ------------------------------------------------------------------------

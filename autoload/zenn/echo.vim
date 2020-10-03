@@ -19,7 +19,10 @@ function! zenn#echo#echo_msg(msg, ...) abort
     else
       echo "zenn-vim:\n" . l:msg
     endif
+  else
+    echo a:msg
   endif
+  return v:true
 endfunction
 
 " show error message
@@ -43,7 +46,10 @@ function! zenn#echo#echo_err(msg, ...) abort
     else
       echo "zenn-vim:\n" . l:msg
     endif
+  else
+    echo a:msg
   endif
   echohl None
+  return v:false
 endfunction
 
