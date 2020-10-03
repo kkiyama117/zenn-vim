@@ -13,19 +13,39 @@ function! s:get_promise() abort
 endfunction
 
 " =============================================================================
-function s:server(command)
-  let l:preview_job = zenn#cmd#zenn_job(a:command)
-  " wait
-  call l:preview_job.wait(3000)
-  if l:preview_job.status() == "run" && !empty(l:preview_job.stdout)
-      call zenn#echo#echo_msg(l:preview_job.stdout)
-  else
-      call zenn#echo#echo_err("preview failed:")
-      call zenn#echo#echo_err(l:preview_job.stderr)
-      call l:preview_job.stop()
-      let l:preview_job = v:null
-  endif
-  return l:preview_job
+function s:on_receive(buffer, data) abort dict
+  " Remove trailing CRs
+  call map(a:data, 'v:val[-1:] ==# "\r" ? v:val[:-2] : v:val')
+  call extend (a:buffer, a:data)
+endfunction
+function s:on_exit(out, err) abort
+  return {e -> e
+        \ ? zenn#echo#echo_err( "preview server is killed!" . join(a:err, "\n"))
+        \ : zenn#echo#echo_msg(join(a:out, "\n"))}
+endfunction
+function s:server(out,err)
+  return s:get_job().start(["npx", "zenn", "preview"],{
+        \ 'on_stdout': function('s:on_receive', [a:out]),
+        \ 'on_stderr': function('s:on_receive', [a:err]),
+        \ 'on_exit': s:on_exit(a:out,a:err)
+        \})
+endfunction
+
+function s:server_promise()
+  let l:stdout = ['']
+  let l:stderr = ['']
+  return s:get_promise().new({rv,rj ->
+        \ rv(s:server(l:stdout,l:stderr))
+        \})
+endfunction
+
+function s:set_server(arg) abort
+  let s:preview_job = a:arg
+  return a:arg
+endfunction
+
+function! s:wait(ms)
+  return s:Promise.new({resolve -> timer_start(a:ms, resolve)})
 endfunction
 
 function! zenn#preview#preview(port) abort
@@ -33,7 +53,7 @@ function! zenn#preview#preview(port) abort
   const l:command = exists("a:1") ? ["preview", "--port", a:port]
     \: ["preview"]
   " check if preview is already running
-  if exists("s:preview_job") && !empty(s:preview_job)
+  if exists("s:preview_job") && type(s:preview_job) != v:null
     call zenn#echo#echo_msg("preview is already running")
     return
   else
@@ -41,18 +61,17 @@ function! zenn#preview#preview(port) abort
         \. " localhost: " . a:port . " ...")
   endif
   " run server
-  let s:preview_job = s:server(l:command)
-  if type(s:preview_job) == v:null
-    call zenn#echo#echo_msg("preview job is not created")
-    return
-  endif
+  return zenn#cmd#initZenn()
+        \.then({ -> s:server_promise()
+            \.then({result -> s:set_server(result)})
+            \.then({ result -> zenn#echo#echo_msg("preview is started!")})
+        \})
 endfunction
 
 function! zenn#preview#stop_preview() abort
   if exists("s:preview_job") && type(s:preview_job) != v:null
     call s:preview_job.stop()
     let s:preview_job = v:null
-    call zenn#echo#echo_msg("preview is stopped!")
   else
     call zenn#echo#echo_msg("preview is not running")
   endif
