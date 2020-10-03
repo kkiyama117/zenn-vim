@@ -12,13 +12,6 @@ function! s:get_promise() abort
   return s:Promise
 endfunction
 
-function! s:get_lambda() abort
-  if !exists('s:Lambda')
-    let s:Lambda= vital#zenn#import('Lambda')
-  endif
-  return s:Lambda
-endfunction
-
 " =============================================================================
 " {{{1
 function! s:echo_promise(msg) abort
