@@ -14,17 +14,17 @@ endfunction
 
 " =============================================================================
 " {{{1
-function! s:echo_promise(msg) abort
+function s:echo_promise(msg) abort
   return s:get_promise().resolve({resolve -> resolve(zenn#echo#echo_msg(a:msg)) })
 endfunction
 " {{{1
-function! s:on_receive(buffer, data) abort dict
+function s:on_receive(buffer, data) abort dict
   " Remove trailing CRs
   call map(a:data, 'v:val[-1:] ==# "\r" ? v:val[:-2] : v:val')
   call extend (a:buffer, a:data)
 endfunction
 
-function! s:on_exit(rv, rj, out, err) abort
+function s:on_exit(rv, rj, out, err) abort
   return {e -> e ? a:rj(join(a:err, "\n")) : a:rv(join(a:out, "\n"))}
 endfunction
 
@@ -33,7 +33,7 @@ endfunction
 " call zenn#cmd#job('https://github.com/lambdalisue/gina.vim')
 "	      \.then({ result -> execute('echo ' . string(result), '') })
 "	      \.catch({ result -> execute('echo ' . string(result), '') })
-function zenn#cmd#sh(commands) abort
+function! zenn#cmd#sh(commands) abort
   let l:stdout = ['']
   let l:stderr = ['']
   return s:get_promise().new({
@@ -45,93 +45,57 @@ function zenn#cmd#sh(commands) abort
         \})
 endfunction
 
-function! s:initNpm() abort
-  return zenn#cmd#sh(["npm", "init", "--yes"])
-        \.then({ -> zenn#echo#echo_msg("npm init finished")})
-        \.catch({ -> zenn#echo#echo_err("npm initialization was failed")})
-endfunction
-
-function! s:installNpm() abort
+function s:initNpm() abort
   let l:jobs = []
   if !filereadable("package.json")
     call add(l:jobs, { -> s:echo_promise("package.json is not found! start initialization ...")})
-    call add(l:jobs, { -> s:initNpm()})
+    call add(l:jobs, { -> zenn#cmd#sh(["npm", "init", "--yes"])
+          \.then({ -> zenn#echo#echo_msg("npm init finished")})
+          \.catch({ -> zenn#echo#echo_err("npm initialization was failed")})
+          \})
+  else
+    call add(l:jobs, { -> s:echo_promise("package.json is found! Initialization passed.")})
   endif
   return s:get_promise().chain(l:jobs)
 endfunction
 
 " run npm command {{{1
-function! zenn#cmd#npm_promise(args) abort
-  let l:jobs = []
-  if !isdirectory("node_modules")
-    call add(l:jobs, { -> s:echo_promise("node_modules are not found! start installing ...")})
-    call add(l:jobs, { -> s:installNpm()})
-  endif
-  call add(l:jobs, { -> zenn#cmd#sh(["npm"] + a:args)})
-  return s:get_promise().chain(l:jobs)
+"function! zenn#cmd#npm_promise(args) abort
+"  return s:initNpm().then({ -> zenn#cmd#sh(["npm"] + a:args)})
+"endfunction
+
+" Force update {{{1
+function! zenn#cmd#zenn_update() abort
+  return s:initNpm().then({ -> zenn#cmd#sh(["npm", "i", "zenn-cli@latest"])})
 endfunction
 
-function s:installZenn() abort
-  let l:jobs = []
-  " check node_modules
-  if !isdirectory("node_modules")
-    call add(l:jobs, { -> s:echo_promise("node_modules are not found! start installing ...")})
-    call add(l:jobs, { -> s:installNpm()})
-  endif
-  if !filereadable("node_modules/.bin/zenn")
-    call add({ -> s:echo_promise("zenn_cli is not found! start installing ...")})
-    call add(l:jobs, zenn#cmd#sh(["npm", "i", "zenn-cli@latest"])
+" init npm 
+function s:installZennFromNpm() abort
+  call s:initNpm()
+  if !isdirectory("node_modules") || !filereadable("node_modules/.bin/zenn") 
+    call zenn#echo#echo_msg("zenn-cli is not found! start installing ...")
+    return zenn#cmd#sh(["npm", "i", "zenn-cli@latest"])
           \.then({ out -> zenn#echo#echo_msg("zenn-cli is installed!")})
           \.catch({ out -> zenn#echo#echo_err("instaiilng zenn-cli failed")})
-          \)
+  else
+    return s:echo_promise("node_modules are found! Install passed.")
   endif
-  return s:get_promise().chain(l:jobs)
 endfunction
 
 " Initialize process
-function s:initZenn() abort
-  let l:jobs = []
-  if !filereadable("node_modules/.bin/zenn")
-    call add({ -> s:echo_promise("zenn_cli is not found! start installing")})
-    call add(l:jobs, zenn#cmd#sh(["npm", "i", "zenn-cli@latest"])
-          \.then({ out -> zenn#echo#echo_msg("zenn-cli is installed!")})
-          \.catch({ out -> zenn#echo#echo_err("instaiilng zenn-cli failed")})
-          \)
-    call s:installZenn()
-  endif
-  if !isdirectory("articles") || !isdirectory("books")
-    call zenn#cmd#sh(["npx", "zenn", "init"]).then(out ->zenn#echo#echo_msg(
-          \ "zenn cli initialization finished."
-          \))
+function zenn#cmd#initZenn() abort
+  " check node_modules
+  if !filereadable(".gitignore") || !filereadable("README.md") || !isdirectory("articles") || !isdirectory("books")
+    return s:installZennFromNpm().then({zenn#cmd#sh(["npx", "zenn", "init"])
+          \.then({ -> zenn#echo#echo_msg("zenn-cli init command finished")})})
+  else
+    return s:installZennFromNpm()
   endif
 endfunction
 
 " run npx zenn command {{{1
 function! zenn#cmd#zenn_promise(args) abort
-  let l:jobs = s:initZennPromiseList()
-  s:get_promise().new({re, rv ->
-        \ []
-        \})
-  call add(l:jobs, { -> s:sh(["npx", "zenn"] + a:args)})
-  return s:get_promise().chain(l:jobs)
+  return zenn#cmd#initZenn().then({ -> zenn#cmd#sh(["npx", "zenn"] + a:args)})
 endfunction
 
-" run npx zenn command {{{1
-function! zenn#cmd#zenn_job(args) abort
-  let l:jobs = s:initZennPromiseList()
-  if empty(l:jobs)
-    let l:chain =s:get_promise().chain(l:jobs)
-    let [result, error] = s:get_promise().wait(l:chain)
-    if error isnot# v:null
-      echoerr "Init Failed:" . string(error)
-      return v:null
-    endif
-  endif
-  return s:get_job().start(['npx', 'zenn'] + a:args, {
-          \ 'stdout': [''],
-          \ 'stderr': [''],
-          \ 'on_stdout': function('s:on_stdout'),
-          \ 'on_stderr': function('s:on_stderr'),
-          \ 'on_exit': function('s:on_exit'),
-          \})
-endfunction
+

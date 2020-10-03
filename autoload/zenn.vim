@@ -42,7 +42,6 @@ function! zenn#new_article(...) abort
       \.catch(
       \  { arr -> zenn#echo#echo_err(arr)}
       \ )
-      \.finally({ _ -> zenn#echo#echo_msg("zenn#new_article finished")})
   endif
 endfunction
 
@@ -57,7 +56,6 @@ function! zenn#new_book(...) abort
       \.catch(
       \  { arr -> zenn#echo#echo_err(arr)}
       \ )
-      \.finally({ _ -> zenn#echo#echo_msg("zenn#new_book finished")})
 endfunction
 
 " ------------------------------------------------------------------------
@@ -65,14 +63,24 @@ endfunction
 "   Usage:  :call zenn#update() -- update
 function! zenn#update() abort
   call zenn#echo#echo_msg( "zenn-cli is updating ...")
-  return zenn#cmd#npm_promise(["i", "zenn-cli@latest"])
+  return zenn#cmd#zenn_update()
       \.then(
       \  { arr -> zenn#echo#echo_msg(arr)})
       \.catch(
       \  { arr -> zenn#echo#echo_err(arr)}
       \ )
-      \.finally({ _ -> zenn#echo#echo_msg("zenn#update finished")})
+      \.finally({ -> zenn#echo#echo_msg("zenn#update finished")})
 endfunction
+
+function! zenn#help() abort
+  call zenn#cmd#zenn_promise(["help"])
+      \.then(
+      \  { arr -> zenn#echo#echo_msg(arr)})
+      \.catch(
+      \  { arr -> zenn#echo#echo_err(arr)}
+      \ )
+endfunction
+
 
 " ------------------------------------------------------------------------
 " zenn#preview: start preview server. {{{1
