@@ -35,7 +35,12 @@ function! zenn#new_article(...) abort
     if exists("a:1")
       let l:args_dict["slug"] = a:1
     endif
-    return zenn#article#new_article(l:args_dict)
+    call zenn#article#new_article(l:args_dict)
+      \.then(
+      \  { arr -> zenn#echo#echo_msg(arr)})
+      \.catch(
+      \  { arr -> zenn#echo#echo_err(arr)}
+      \ )
   endif
 endfunction
 
@@ -44,7 +49,12 @@ endfunction
 "   Usage:  :call zenn#new_book() -- create new book.
 function! zenn#new_book(...) abort
   const l:slug = !empty(a:000) ? a:1 : v:null
-  return zenn#book#new_book(l:slug)
+  call zenn#book#new_book(l:slug)
+      \.then(
+      \  { arr -> zenn#echo#echo_msg(arr)})
+      \.catch(
+      \  { arr -> zenn#echo#echo_err(arr)}
+      \ )
 endfunction
 
 " ------------------------------------------------------------------------

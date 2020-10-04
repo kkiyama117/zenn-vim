@@ -5,6 +5,14 @@ function! s:get_datetime() abort
   return s:DateTime
 endfunction
 
+" Check Configfunction! s:get_datetime() abort
+function! s:get_config()
+  if !exists('s:DateTime')
+    let s:Config = vital#zenn#import('Config')
+  endif
+  return s:Config
+endfunction
+
 " Set template to top if set by setting.
 function! s:slug_top() abort
   " Define the following only when the variable is missing
@@ -42,8 +50,8 @@ function! zenn#article#new_article(args_dict) abort
   for [key,value] in items(l:args_dict)
     call add(l:args, "--" . key)
     if (key == "slug")
-      const l:slug = l:slug_top != v:null ? l:slug_top . "-" . a:slug : a:slug
-      call add(l:args, )
+      const l:slug = l:slug_top != v:null ? l:slug_top . "-" . value : value
+      call add(l:args, l:slug)
     else
       call add(l:args, value)
     endif
@@ -52,10 +60,6 @@ function! zenn#article#new_article(args_dict) abort
   if !has_key(l:args_dict, "slug") && l:slug_top != v:null
     call extend(l:args, ['--slug', l:slug_top])
   endif
-  call zenn#cmd#zenn_promise(["new:article"] + l:args)
-    \.then(
-    \  { arr -> zenn#echo#echo_msg(arr)})
-    \.catch(
-    \  { arr -> zenn#echo#echo_err(arr)}
-    \ )
+  echomsg string(l:args)
+  return zenn#cmd#zenn_promise(["new:article"] + l:args)
 endfunction

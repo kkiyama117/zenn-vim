@@ -50,10 +50,5 @@ function! zenn#book#new_book(slug) abort
     const l:slug = l:slug_top != v:null ? l:slug_top . "-" . a:slug : a:slug
   endif
   const l:args = l:slug ==v:null ? [] : ["--slug", l:slug]
-  call zenn#cmd#zenn_promise(["new:book"] + l:args)
-      \.then(
-      \  { arr -> zenn#echo#echo_msg(arr)})
-      \.catch(
-      \  { arr -> zenn#echo#echo_err(arr)}
-      \ )
+  return zenn#cmd#zenn_promise(["new:book"] + l:args)
 endfunction

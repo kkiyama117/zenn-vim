@@ -51,6 +51,11 @@ After that, configure your vimrc to call functions.
 EXAMPLES                                                   *zenn-vim-examples*
 
 >
+  " setting for zenn.vim
+  let g:zenn#article#slug = {
+    \ "use_template": v:true,
+    \ "format": "%F"
+    \}
   " npm install zenn-cli@latest
   command! -nargs=0 ZennUpdate call zenn#update()
 
@@ -128,20 +133,30 @@ Note:
 OPTIONS                                                     *zenn-vim-options*
 
                                                *zenn-vim-options-article-slug*
-	|g:zenn#article#slug| (dict)
+	|g:zenn#article#slug|
 		if 'use_template' in this dict is |v:true|,
 		article slug name is start with 
 		Vital.DateTime.format('format') or
 		Vital.DateTime.strfttime('strfttime') of current time.
+		when |zenn#new_article([{slug}])| is called with no args and 'format' or
+		'strfttime' is set, this plugin try to create new article which slug is 
+		equal to string from vital function's output, else slug is set to
+		'(Vital's output)-{slug}'
+		You should be careful to slug's length must be longer than 12 charactors.
 		See |Vital.DateTime-format| in
 		https://github.com/vim-jp/vital.vim/blob/master/doc/vital/DateTime.txt
 
                                                   *zenn-vim-options-book-slug*
-	|g:zenn#book#slug| (dict)
+	|g:zenn#book#slug|
 		if 'use_template' in this dict is |v:true|,
 		book slug name is start with 
 		Vital.DateTime.format('format') or
 		Vital.DateTime.strfttime('strfttime') of current time.
+		when |zenn#new_book([{slug}])| is called with no args and 'format' or
+		'strfttime' is set, this plugin try to create new article which slug is 
+		equal to string from vital function's output, else slug is set to
+		'(Vital's output)-{slug}'
+		You should be careful to slug's length must be longer than 12 charactors.
 		See |Vital.DateTime-format| in
 		https://github.com/vim-jp/vital.vim/blob/master/doc/vital/DateTime.txt
 
