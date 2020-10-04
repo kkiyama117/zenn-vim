@@ -1,6 +1,11 @@
-" Vim global plugin for zenn.dev
-" Last Change: 20200923
+"=============================================================================
+" FILE: zenn.vim
+" AUTHOR: kkiyama117 <k.kiyama117@gmail.com>
 " Maintainer: kkiyama117 <k.kiyama117@gmail.com>
+" License: GPLv3 license
+" Last Change: 20201004
+"=============================================================================
+" Vim global plugin for zenn.dev
 
 scriptencoding utf-8
 
@@ -30,18 +35,7 @@ function! zenn#new_article(...) abort
     if exists("a:1")
       let l:args_dict["slug"] = a:1
     endif
-    " create args from dict
-    let l:args = []
-    for [key,value] in items(l:args_dict)
-      call add(l:args, "--" . key)
-      call add(l:args, value)
-    endfor
-    call zenn#cmd#zenn_promise(["new:article"] + l:args)
-      \.then(
-      \  { arr -> zenn#echo#echo_msg(arr)})
-      \.catch(
-      \  { arr -> zenn#echo#echo_err(arr)}
-      \ )
+    return zenn#article#new_article(l:args_dict)
   endif
 endfunction
 
@@ -49,13 +43,8 @@ endfunction
 " zenn#new_book: Create new book. {{{1
 "   Usage:  :call zenn#new_book() -- create new book.
 function! zenn#new_book(...) abort
-  const l:args = empty(a:000) ? [] : ["--slug", a:1]
-  call zenn#cmd#zenn_promise(["new:book"] + l:args)
-      \.then(
-      \  { arr -> zenn#echo#echo_msg(arr)})
-      \.catch(
-      \  { arr -> zenn#echo#echo_err(arr)}
-      \ )
+  const l:slug = !empty(a:000) ? a:1 : v:null
+  return zenn#book#new_book(l:slug)
 endfunction
 
 " ------------------------------------------------------------------------
@@ -72,6 +61,9 @@ function! zenn#update() abort
       \.finally({ -> zenn#echo#echo_msg("zenn#update finished")})
 endfunction
 
+" ------------------------------------------------------------------------
+" zenn#help: See zenn-cli help. {{{1
+"   Usage:  :call zenn#update() -- update
 function! zenn#help() abort
   call zenn#cmd#zenn_promise(["help"])
       \.then(
@@ -80,7 +72,6 @@ function! zenn#help() abort
       \  { arr -> zenn#echo#echo_err(arr)}
       \ )
 endfunction
-
 
 " ------------------------------------------------------------------------
 " zenn#preview: start preview server. {{{1
