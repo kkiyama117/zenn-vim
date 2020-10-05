@@ -1,6 +1,5 @@
 # zenn-vim
-
-(!Beta) plugin for zenn.dev
+plugin for zenn.dev
 
 ## Requirements
 
