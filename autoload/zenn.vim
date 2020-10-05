@@ -3,7 +3,7 @@
 " AUTHOR: kkiyama117 <k.kiyama117@gmail.com>
 " Maintainer: kkiyama117 <k.kiyama117@gmail.com>
 " License: GPLv3 license
-" Last Change: 20201004
+" Last Change: 20201006
 "=============================================================================
 " Vim global plugin for zenn.dev
 

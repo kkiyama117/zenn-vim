@@ -1,5 +1,5 @@
-*zenn.txt*    For Vim Version 8.1 zenn.dev extension for vim.
-Version: 0.4.1
+*zenn.txt*         For Vim Version 8.1             zenn.dev extension for vim.
+Version: 1.0.2
 Author: kkiyama117 <k.kiyama117@gmail.com>                       *zenn-author*
 License: GPLv3 license
 
@@ -62,6 +62,7 @@ EXAMPLES                                                   *zenn-vim-examples*
     \ "use_template": v:true,
     \ "format": "%F"
     \}
+
   " npm install zenn-cli@latest
   command! -nargs=0 ZennUpdate call zenn#update()
 
