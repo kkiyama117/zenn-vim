@@ -36,9 +36,9 @@ function! s:slug_top() abort
     call zenn#echo#echo_err("`g:zenn#article#slug['use_template']` is v:true,"
           \. " but templates are not found!\n". "Set `g:zenn#article#slug['format']`" 
           \. " or `g:zenn#article#slug#['strfttype']`")
-    return ""
+    return v:null
   else
-    return ""
+    return v:null
   endif
 endfunction
 
