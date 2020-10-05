@@ -43,6 +43,12 @@ Requirements~
 	- (neo)vim node js support is not needed because it is called as system
 	  command.
 
+To install, run
+>
+  git clone https://github.com/kkiyama117/zenn-vim zenn
+>
+on your shell. Be careful to set 'zenn' as name of this plugin if you use
+plugin manager.
 
 After that, configure your vimrc to call functions.
 (See |zenn-vim-examples|, |zenn-vim-variables|).
