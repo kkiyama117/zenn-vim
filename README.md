@@ -52,7 +52,7 @@ After that, configure your vimrc to call functions.
 
 - Add functions like `zenn_vim#preview()`, `zenn_vim#new_article()`, ...
 
-For details, see [`doc/zenn_vim.txt`](https://github.com/kkiyama117/zenn-vim/blob/master/doc/zenn_vim.txt)
+For details, see [`doc/zenn.txt`](https://github.com/kkiyama117/zenn-vim/blob/master/doc/zenn_vim.txt)
 or call `:help zenn_vim` on vim
 
 ## Install
