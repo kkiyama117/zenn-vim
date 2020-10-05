@@ -62,7 +62,7 @@ endfunction
 "   Usage:  :call zenn#update() -- update
 function! zenn#update() abort
   call zenn#echo#echo_msg( "zenn-cli is updating ...")
-  return zenn#cmd#zenn_update()
+  call zenn#cmd#zenn_update()
       \.then(
       \  { arr -> zenn#echo#echo_msg(arr)})
       \.catch(
@@ -88,14 +88,14 @@ endfunction
 "   Usage:  :call zenn#preview() -- start server on localhost:8000`
 "           :call zenn#preview(port) -- start server on localhost:{port}`
 function! zenn#preview(...) abort
-  return zenn#preview#preview(exists("a:1") ? a:1 : "8000")
+  call zenn#preview#preview(exists("a:1") ? a:1 : "8000")
 endfunction
 
 " ------------------------------------------------------------------------
 " zenn#stop_preview: start preview server. {{{1
 "   Usage:  :call zenn#stop_preview() -- stop server.
 function! zenn#stop_preview() abort
-  return zenn#preview#stop_preview()
+  call zenn#preview#stop_preview()
 endfunction
 
 let &cpo = s:save_cpo

@@ -12,7 +12,7 @@ Interface       |zenn-vim-interface|
 	Functions       |zenn-vim-functions|
 	Mappings        |zenn-vim-mappings|
 	Commands        |zenn-vim-commands|
-	Options         |zenn-vim-options|
+	Variables         |zenn-vim-options|
 
 ==============================================================================
 INTRODUCTION                                           *zenn-vim-introduction*
@@ -45,7 +45,7 @@ Requirements~
 
 
 After that, configure your vimrc to call functions.
-(See |zenn-vim-examples|, |zenn-vim-options|).
+(See |zenn-vim-examples|, |zenn-vim-variables|).
 
 ==============================================================================
 EXAMPLES                                                   *zenn-vim-examples*
@@ -130,9 +130,9 @@ Note:
 	there are command examples at |zenn-vim-examples|
 
 ------------------------------------------------------------------------------
-OPTIONS                                                     *zenn-vim-options*
+VARIABLES                                                 *zenn-vim-variables*
 
-                                               *zenn-vim-options-article-slug*
+                                             *zenn-vim-variables-article-slug*
 	|g:zenn#article#slug|
 		if 'use_template' in this dict is |v:true|,
 		article slug name is start with 
@@ -146,7 +146,7 @@ OPTIONS                                                     *zenn-vim-options*
 		See |Vital.DateTime-format| in
 		https://github.com/vim-jp/vital.vim/blob/master/doc/vital/DateTime.txt
 
-                                                  *zenn-vim-options-book-slug*
+                                                *zenn-vim-variables-book-slug*
 	|g:zenn#book#slug|
 		if 'use_template' in this dict is |v:true|,
 		book slug name is start with 
