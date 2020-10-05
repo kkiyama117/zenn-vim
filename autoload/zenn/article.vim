@@ -60,6 +60,5 @@ function! zenn#article#new_article(args_dict) abort
   if !has_key(l:args_dict, "slug") && l:slug_top != v:null
     call extend(l:args, ['--slug', l:slug_top])
   endif
-  echomsg string(l:args)
   return zenn#cmd#zenn_promise(["new:article"] + l:args)
 endfunction

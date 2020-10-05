@@ -86,7 +86,7 @@ endfunction
 function zenn#cmd#initZenn() abort
   " check node_modules
   if !filereadable(".gitignore") || !filereadable("README.md") || !isdirectory("articles") || !isdirectory("books")
-    return s:installZennFromNpm().then({zenn#cmd#sh(["npx", "zenn", "init"])
+    return s:installZennFromNpm().then({ -> zenn#cmd#sh(["npx", "zenn", "init"])
           \.then({ -> zenn#echo#echo_msg("zenn-cli init command finished")})})
   else
     return s:installZennFromNpm()

@@ -50,10 +50,10 @@ endfunction
 
 function! zenn#preview#preview(port) abort
   " parse args
-  const l:command = exists("a:1") ? ["preview", "--port", a:port]
+  const l:command = exists("a:port") ? ["preview", "--port", a:port]
     \: ["preview"]
   " check if preview is already running
-  if exists("s:preview_job") && type(s:preview_job) != v:null
+  if exists("s:preview_job") && type(s:preview_job) == v:t_dict
     call zenn#echo#echo_msg("preview is already running")
     return
   else
@@ -69,7 +69,7 @@ function! zenn#preview#preview(port) abort
 endfunction
 
 function! zenn#preview#stop_preview() abort
-  if exists("s:preview_job") && type(s:preview_job) != v:null
+  if exists("s:preview_job") && type(s:preview_job) == v:t_dict
     call s:preview_job.stop()
     let s:preview_job = v:null
   else
