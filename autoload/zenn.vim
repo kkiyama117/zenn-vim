@@ -1,6 +1,11 @@
-" Vim global plugin for zenn.dev
-" Last Change: 20200923
+"=============================================================================
+" FILE: zenn.vim
+" AUTHOR: kkiyama117 <k.kiyama117@gmail.com>
 " Maintainer: kkiyama117 <k.kiyama117@gmail.com>
+" License: GPLv3 license
+" Last Change: 20201004
+"=============================================================================
+" Vim global plugin for zenn.dev
 
 scriptencoding utf-8
 
@@ -30,13 +35,7 @@ function! zenn#new_article(...) abort
     if exists("a:1")
       let l:args_dict["slug"] = a:1
     endif
-    " create args from dict
-    let l:args = []
-    for [key,value] in items(l:args_dict)
-      call add(l:args, "--" . key)
-      call add(l:args, value)
-    endfor
-    call zenn#cmd#zenn_promise(["new:article"] + l:args)
+    call zenn#article#new_article(l:args_dict)
       \.then(
       \  { arr -> zenn#echo#echo_msg(arr)})
       \.catch(
@@ -49,8 +48,8 @@ endfunction
 " zenn#new_book: Create new book. {{{1
 "   Usage:  :call zenn#new_book() -- create new book.
 function! zenn#new_book(...) abort
-  const l:args = empty(a:000) ? [] : ["--slug", a:1]
-  call zenn#cmd#zenn_promise(["new:book"] + l:args)
+  const l:slug = !empty(a:000) ? a:1 : v:null
+  call zenn#book#new_book(l:slug)
       \.then(
       \  { arr -> zenn#echo#echo_msg(arr)})
       \.catch(
@@ -63,7 +62,7 @@ endfunction
 "   Usage:  :call zenn#update() -- update
 function! zenn#update() abort
   call zenn#echo#echo_msg( "zenn-cli is updating ...")
-  return zenn#cmd#zenn_update()
+  call zenn#cmd#zenn_update()
       \.then(
       \  { arr -> zenn#echo#echo_msg(arr)})
       \.catch(
@@ -72,6 +71,9 @@ function! zenn#update() abort
       \.finally({ -> zenn#echo#echo_msg("zenn#update finished")})
 endfunction
 
+" ------------------------------------------------------------------------
+" zenn#help: See zenn-cli help. {{{1
+"   Usage:  :call zenn#update() -- update
 function! zenn#help() abort
   call zenn#cmd#zenn_promise(["help"])
       \.then(
@@ -81,20 +83,19 @@ function! zenn#help() abort
       \ )
 endfunction
 
-
 " ------------------------------------------------------------------------
 " zenn#preview: start preview server. {{{1
 "   Usage:  :call zenn#preview() -- start server on localhost:8000`
 "           :call zenn#preview(port) -- start server on localhost:{port}`
 function! zenn#preview(...) abort
-  return zenn#preview#preview(exists("a:1") ? a:1 : "8000")
+  call zenn#preview#preview(exists("a:1") ? a:1 : "8000")
 endfunction
 
 " ------------------------------------------------------------------------
 " zenn#stop_preview: start preview server. {{{1
 "   Usage:  :call zenn#stop_preview() -- stop server.
 function! zenn#stop_preview() abort
-  return zenn#preview#stop_preview()
+  call zenn#preview#stop_preview()
 endfunction
 
 let &cpo = s:save_cpo

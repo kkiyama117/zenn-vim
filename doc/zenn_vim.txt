@@ -1,5 +1,4 @@
-*zenn.txt*                                         zenn.dev extension for vim.
-
+*zenn.txt*    For Vim Version 8.1 zenn.dev extension for vim.
 Version: 0.4.1
 Author: kkiyama117 <k.kiyama117@gmail.com>                       *zenn-author*
 License: GPLv3 license
@@ -10,10 +9,10 @@ CONTENTS                                                   *zenn-vim-contents*
 Introduction    |zenn-vim-introduction|
 Install         |zenn-vim-install|
 Interface       |zenn-vim-interface|
-  Functions       |zenn-vim-functions|
-  Mappings        |zenn-vim-mappings|
-  Commands        |zenn-vim-commands|
-  Options         |zenn-vim-options|
+	Functions       |zenn-vim-functions|
+	Mappings        |zenn-vim-mappings|
+	Commands        |zenn-vim-commands|
+	Variables         |zenn-vim-options|
 
 ==============================================================================
 INTRODUCTION                                           *zenn-vim-introduction*
@@ -29,29 +28,34 @@ INSTALL                                                     *zenn-vim-install*
 
 Requirements~
 - Neovim or Vim8~
-  - this plugin uses Async Feature (channels, jobs, e.t.c.).
-  - include vital.vim (https://github.com/vim-jp/vital.vim).
-    this plugin uses
-      - Async.Promise
-      - System.Job (from https://github.com/lambdalisue/vital-Whisky)
-    and supports
-      - The latest major version (8.2.*)
-      - The previous major version (8.1.*)
-    now.
+	- this plugin uses Async Feature (channels, jobs, e.t.c.).
+	- include vital.vim (https://github.com/vim-jp/vital.vim).
+	  this plugin uses
+			- Async.Promise
+			- System.Job (from https://github.com/lambdalisue/vital-Whisky)
+	  and supports
+			- The latest major version (8.2.*)
+			- The previous major version (8.1.*)
+	  now.
 - Npm(with npx)~
-  - zenn official doesn't specify nodejs version number,
-    but I recommend using its latest lts version.
-  - (neo)vim node js support is not needed because it is called as system
-    command.
+	- zenn official doesn't specify nodejs version number,
+	  but I recommend using its latest lts version.
+	- (neo)vim node js support is not needed because it is called as system
+	  command.
 
 
 After that, configure your vimrc to call functions.
-(See |zenn-vim-examples|, |zenn-vim-options|).
+(See |zenn-vim-examples|, |zenn-vim-variables|).
 
 ==============================================================================
 EXAMPLES                                                   *zenn-vim-examples*
 
 >
+  " setting for zenn.vim
+  let g:zenn#article#slug = {
+    \ "use_template": v:true,
+    \ "format": "%F"
+    \}
   " npm install zenn-cli@latest
   command! -nargs=0 ZennUpdate call zenn#update()
 
@@ -77,38 +81,38 @@ FUNCTIONS                                                 *zenn-vim-functions*
 WIP.
 
                                                                *zenn#update()*
-    zenn#update()
-        Update zenn-cli asynchronously.
+	zenn#update()
+		Update zenn-cli asynchronously.
 
                                                               *zenn#preview()*
-    zenn#preview([{port}])
-        Run zenn-cli preview.
-        {port} is port number preview server running.
-        default is 8000. this server process runs on vim process and
-        killed when all buffers are closed. 
+	zenn#preview([{port}])
+		Run zenn-cli preview.
+		{port} is port number preview server running.
+		default is 8000. this server process runs on vim process and
+		killed when all buffers are closed. 
 
                                                          *zenn#stop_preview()*
-    zenn#stop_preview()
-        Kill zenn-cli preview server( only if process is made by
-        this plugin). this specification may be changed in the future.
+	zenn#stop_preview()
+		Kill zenn-cli preview server( only if process is made by
+		this plugin). this specification may be changed in the future.
 
                                                           *zenn#new_article()*
-    zenn#new_article([{slug},{title},{type},{emoji}])
-        Create new book.
-        {slug} is file name, must be over 12 and below 50 charactors
-        and need not to be duplicated. you can use (a-z0-9) and '-'.
-        if it's not set, zenn-cli generate rundom slug.
-        {title} is title of article.
-        {type} is type of article, choose from [`"tech"`, `"idea"`].
-        {emoji} is a charactor uused as thumbnail.
-        all emoji lists are at https://getemoji.com/
+	zenn#new_article([{slug},{title},{type},{emoji}])
+		Create new book.
+		{slug} is file name, must be over 12 and below 50 charactors
+		and need not to be duplicated. you can use (a-z0-9) and '-'.
+		if it's not set, zenn-cli generate rundom slug.
+		{title} is title of article.
+		{type} is type of article, choose from [`"tech"`, `"idea"`].
+		{emoji} is a charactor uused as thumbnail.
+		all emoji lists are at https://getemoji.com/
 
                                                              *zenn#new_book()*
-    zenn#new_book([{slug}])
-        Create new book.
-        {slug} is file name, must be over 12 and below 50 charactors
-        and need not to be duplicated. you can use (a-z0-9) and '-'.
-        if it's not set, zenn-cli generate rundom slug.
+	zenn#new_book([{slug}])
+		Create new book.
+		{slug} is file name, must be over 12 and below 50 charactors
+		and need not to be duplicated. you can use (a-z0-9) and '-'.
+		if it's not set, zenn-cli generate rundom slug.
 
 ------------------------------------------------------------------------------
 MAPPINGS                                                   *zenn-vim-mappings*
@@ -123,16 +127,38 @@ COMMANDS                                                   *zenn-vim-commands*
 This plugin has no commands but you can create commands with
 |zenn-vim-functions| as you like.
 Note:
-    there are command examples at |zenn-vim-examples|
+	there are command examples at |zenn-vim-examples|
 
 ------------------------------------------------------------------------------
-OPTIONS                                                     *zenn-vim-options*
+VARIABLES                                                 *zenn-vim-variables*
 
-WIP.
+                                             *zenn-vim-variables-article-slug*
+	|g:zenn#article#slug|
+		if 'use_template' in this dict is |v:true|,
+		article slug name is start with 
+		Vital.DateTime.format('format') or
+		Vital.DateTime.strfttime('strfttime') of current time.
+		when |zenn#new_article([{slug}])| is called with no args and 'format' or
+		'strfttime' is set, this plugin try to create new article which slug is 
+		equal to string from vital function's output, else slug is set to
+		'(Vital's output)-{slug}'
+		You should be careful to slug's length must be longer than 12 charactors.
+		See |Vital.DateTime-format| in
+		https://github.com/vim-jp/vital.vim/blob/master/doc/vital/DateTime.txt
 
-Note:
-    there are no options now, but some options for format, copy, and actions
-    in future.
+                                                *zenn-vim-variables-book-slug*
+	|g:zenn#book#slug|
+		if 'use_template' in this dict is |v:true|,
+		book slug name is start with 
+		Vital.DateTime.format('format') or
+		Vital.DateTime.strfttime('strfttime') of current time.
+		when |zenn#new_book([{slug}])| is called with no args and 'format' or
+		'strfttime' is set, this plugin try to create new article which slug is 
+		equal to string from vital function's output, else slug is set to
+		'(Vital's output)-{slug}'
+		You should be careful to slug's length must be longer than 12 charactors.
+		See |Vital.DateTime-format| in
+		https://github.com/vim-jp/vital.vim/blob/master/doc/vital/DateTime.txt
 
 ==============================================================================
 vim:tw=78:ts=4:sts=0:ft=help:nosta:norl:noet:fen:fdm=marker:fdl=0:
