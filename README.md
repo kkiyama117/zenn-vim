@@ -21,13 +21,20 @@ plugin for zenn.dev
   - (neo)vim node js support is not needed because it is called as system
     command.
 
-
-After that, configure your vimrc to call functions.
+Be careful to set 'zenn' as name of this plugin if you use
+plugin manager.
+After downloading to your vim runtimepath, configure your vimrc to call functions.
 (See examples).
 
 ## Examples
 
 ```viml
+  " same prefix from command in monaqa's article
+  const g:zenn#article#slug = {
+    \ "use_template": v:true,
+    \ "format": "%F"
+    \}
+
   " npm install zenn-cli@latest
   command! -nargs=0 ZennUpdate call zenn#update()
   
@@ -49,7 +56,7 @@ After that, configure your vimrc to call functions.
 
 ## Features
 
-- Add functions like `zenn_vim#preview()`, `zenn_vim#new_article()`, ...
+- Add functions like `zenn#preview()`, `zenn#new_article()`, ...
 
 For details, see [`doc/zenn.txt`](https://github.com/kkiyama117/zenn-vim/blob/master/doc/zenn.txt)
 or call `:help zenn_vim` on vim
