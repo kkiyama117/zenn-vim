@@ -1,5 +1,5 @@
 *zenn.txt*         For Vim Version 8.1             zenn.dev extension for vim.
-Version: 1.0.2
+Version: 1.1.1
 Author: kkiyama117 <k.kiyama117@gmail.com>                       *zenn-author*
 License: GPLv3 license
 
