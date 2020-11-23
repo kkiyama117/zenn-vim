@@ -7,7 +7,7 @@ endfunction
 
 " Check Configfunction! s:get_datetime() abort
 function! s:get_config()
-  if !exists('s:DateTime')
+  if !exists('s:Config')
     let s:Config = vital#zenn#import('Config')
   endif
   return s:Config
