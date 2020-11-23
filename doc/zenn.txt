@@ -155,8 +155,8 @@ VARIABLES                                                 *zenn-vim-variables*
 
                                      *zenn-vim-variables-article-edit-new-cmd*
 	|g:zenn#article#edit_new_cmd|
-		if this is the command like "edit", "new" or "vnew",
-		zenn-vim will open the new article after "zenn#new_article".
+		if this is set as "edit", "new" or "vnew",
+		zenn-vim will open the new article after "zenn#new_article" as you set.
 
                                                 *zenn-vim-variables-book-slug*
 	|g:zenn#book#slug|
