@@ -12,7 +12,7 @@ Interface       |zenn-vim-interface|
 	Functions       |zenn-vim-functions|
 	Mappings        |zenn-vim-mappings|
 	Commands        |zenn-vim-commands|
-	Variables         |zenn-vim-options|
+	Variables         |zenn-vim-variables|
 
 ==============================================================================
 INTRODUCTION                                           *zenn-vim-introduction*
@@ -152,6 +152,11 @@ VARIABLES                                                 *zenn-vim-variables*
 		You should be careful to slug's length must be longer than 12 charactors.
 		See |Vital.DateTime-format| in
 		https://github.com/vim-jp/vital.vim/blob/master/doc/vital/DateTime.txt
+
+                                     *zenn-vim-variables-article-edit-new-cmd*
+	|g:zenn#article#edit_new_cmd|
+		if this is the command like "edit", "new" or "vnew",
+		zenn-vim will open the new article after "zenn#new_article".
 
                                                 *zenn-vim-variables-book-slug*
 	|g:zenn#book#slug|

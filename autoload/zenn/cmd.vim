@@ -19,8 +19,8 @@ function s:echo_promise(msg) abort
 endfunction
 " {{{1
 function s:on_receive(buffer, data) abort dict
-  " Remove trailing CRs
-  call map(a:data, 'v:val[-1:] ==# "\r" ? v:val[:-2] : v:val')
+  " Remove trailing CRs and ANSI Escape Codes
+  call map(a:data, {_, val -> substitute(v:val[-1:] ==# "\r" ? v:val[:-2] : v:val, "\x1b\\[[;0-9]*m", '', 'g')})
   call extend (a:buffer, a:data)
 endfunction
 
