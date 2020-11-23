@@ -42,6 +42,36 @@ function! s:slug_top() abort
   endif
 endfunction
 
+function! s:edit_article(outputs) abort
+  let l:name = ''
+  if type(a:outputs) == v:t_list && len(a:outputs) == 1
+    let l:name = a:outputs[0]
+  elseif type(a:outputs) == v:t_string
+    let l:name = a:outputs
+  endif
+
+  if l:name ==# ''
+   " case-1: should not open multiple files at once
+   " case-2: if there are no file to process
+    return a:outputs
+  endif
+
+  call s:get_config().define('zenn#article', {
+        \'edit_new_cmd':v:null,
+        \})
+  let l:command = g:zenn#article#edit_new_cmd
+
+  if l:command != v:null && l:command !=# ''
+    " trim pretty-output
+    " if https://github.com/zenn-dev/zenn-editor/issues/63 accepted, it should
+    " be resolved by the option for the command 'zenn new:article'
+    let l:name = substitute(l:name, "\U1F4C4\s*\\| created\\.", '', 'g')
+    execute l:command 'articles/' . trim(l:name)
+  endif
+
+  return a:outputs
+endfunction
+
 function! zenn#article#new_article(args_dict) abort
   let l:args_dict = a:args_dict
   " create args from dict
@@ -61,4 +91,6 @@ function! zenn#article#new_article(args_dict) abort
     call extend(l:args, ['--slug', l:slug_top])
   endif
   return zenn#cmd#zenn_promise(["new:article"] + l:args)
+        \.then(
+        \  { outputs -> s:edit_article(outputs) } )
 endfunction
