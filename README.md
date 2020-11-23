@@ -35,6 +35,9 @@ After downloading to your vim runtimepath, configure your vimrc to call function
     \ "format": "%F"
     \}
 
+  " open the new article after 'zenn#new_article' with the command
+  const g:zenn#article#edit_new_cmd = "new"
+
   " npm install zenn-cli@latest
   command! -nargs=0 ZennUpdate call zenn#update()
   
